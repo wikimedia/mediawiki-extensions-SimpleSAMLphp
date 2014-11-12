@@ -1,8 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Cicalese"
+			"Cicalese",
+			"Raymond"
 		]
 	},
-	"simplesamlphp-desc": "{{desc|name=SimpleSAMLphp|url=http://www.mediawiki.org/wiki/Extension/SimpleSAMLphp}}"
+	"simplesamlphp-desc": "{{desc|name=SimpleSAMLphp|url=http://www.mediawiki.org/wiki/Extension:SimpleSAMLphp}}"
 }
