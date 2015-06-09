@@ -3,6 +3,5 @@
 		"authors": [
 			"Rangekill"
 		]
-	},
-	"simplesamlphp-desc": "Zorgt voor verificatie met behulp van SimpleSAMLphp in combinatie met PluggableAuth"
+	}
 }
