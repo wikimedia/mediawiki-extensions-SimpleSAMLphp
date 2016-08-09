@@ -1,8 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Revi"
+			"Revi",
+			"Ykhwong"
 		]
 	},
-	"simplesamlphp-desc": "SimpleSAMLphp 와 PluggableAuth를 이용한 인증 제공"
+	"simplesamlphp-desc": "SimpleSAMLphp와 PluggableAuth를 이용한 인증 제공"
 }
