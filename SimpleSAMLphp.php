@@ -22,33 +22,109 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-if ( !class_exists( 'PluggableAuth' ) ) {
-	die( '<b>Error:</b> This extension requires the PluggableAuth extension to be included first' );
+
+class SimpleSAMLphp extends PluggableAuth {
+
+	/**
+	 * @since 1.0
+	 *
+	 * @param &$id
+	 * @param &$username
+	 * @param &$realname
+	 * @param &$email
+	 */
+	public function authenticate( &$id, &$username, &$realname, &$email ) {
+
+		$saml = $this->getSAMLClient();
+		$saml->requireAuth();
+		$attributes = $saml->getAttributes();
+
+		if ( isset( $GLOBALS['wgSimpleSAMLphp_RealNameAttribute'] ) ) {
+			$realNameAttribute = $GLOBALS['wgSimpleSAMLphp_RealNameAttribute'];
+			if ( is_array( $realNameAttribute ) ) {
+				$realname = "";
+				foreach ( $realNameAttribute as $attribute ) {
+					if ( array_key_exists( $attribute, $attributes ) ) {
+						if ( $realname != "" ) {
+							$realname .= " ";
+						}
+						$realname .= $attributes[$attribute][0];
+					} else {
+						return false;
+					}
+				}
+			} else {
+				if ( array_key_exists( $realNameAttribute, $attributes ) ) {
+					$realname = $attributes[$realNameAttribute][0];
+				} else {
+					return false;
+				}
+			}
+		} else {
+			return false;
+		}
+
+		if ( isset( $GLOBALS['wgSimpleSAMLphp_EmailAttribute'] ) &&
+			array_key_exists( $GLOBALS['wgSimpleSAMLphp_EmailAttribute'],
+				$attributes ) ) {
+			$email = $attributes[$GLOBALS['wgSimpleSAMLphp_EmailAttribute']][0];
+		} else {
+			return false;
+		}
+
+		if ( isset( $GLOBALS['wgSimpleSAMLphp_UsernameAttribute'] ) &&
+			array_key_exists( $GLOBALS['wgSimpleSAMLphp_UsernameAttribute'],
+			$attributes ) ) {
+			$username = strtolower(
+				$attributes[$GLOBALS['wgSimpleSAMLphp_UsernameAttribute']][0] );
+			$nt = Title::makeTitleSafe( NS_USER, $username );
+			if ( is_null( $nt ) ) {
+				return false;
+			}
+			$username = $nt->getText();
+			$id = User::idFromName( $username );
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * @since 1.0
+	 *
+	 * @param User &$user
+	 */
+	public function deauthenticate( User &$user ) {
+		$saml = $this->getSAMLClient();
+		$returnto = null;
+		if ( array_key_exists( 'returnto', $_REQUEST ) ) {
+			$title = Title::newFromText( $_REQUEST['returnto'] );
+			if ( ! is_null( $title ) ) {
+				$returnto = $title->getFullURL();
+			}
+		}
+		if ( is_null( $returnto ) ) {
+			$returnto = Title::newMainPage()->getFullURL();
+		}
+		$saml->logout( $returnto );
+		return true;
+	}
+
+	/**
+	 * @since 1.0
+	 *
+	 * @param $id
+	 */
+	public function saveExtraAttributes( $id ) {
+		// intentionally left blank
+	}
+
+	private function getSAMLClient() {
+		require_once rtrim( $GLOBALS['wgSimpleSAMLphp_InstallDir'],
+			DIRECTORY_SEPARATOR ) .  DIRECTORY_SEPARATOR . 'lib' .
+			DIRECTORY_SEPARATOR . '_autoload.php';
+		return new SimpleSAML_Auth_Simple(
+			$GLOBALS['wgSimpleSAMLphp_AuthSourceId'] );
+	}
 }
-
-if ( array_key_exists( 'PluggableAuth_Class', $GLOBALS ) ) {
-	die( '<b>Error:</b> A value for $PluggableAuth_Class has already been set.' );
-}
-
-$GLOBALS['wgExtensionCredits']['other'][] = array (
-	'path' => __FILE__,
-	'name' => 'SimpleSAMLphp',
-	'version' => '1.0',
-	'author' => array(
-		'[https://www.mediawiki.org/wiki/User:Cindy.cicalese Cindy Cicalese]'
-	),
-	'descriptionmsg' => 'simplesamlphp-desc',
-	'url' => 'https://www.mediawiki.org/wiki/Extension:SimpleSAMLphp',
-);
-
-$GLOBALS['PluggableAuth_Class'] = 'SimpleSAMLphp';
-
-$GLOBALS['wgAutoloadClasses']['SimpleSAMLphp'] =
-	__DIR__ . '/SimpleSAMLphp.class.php';
-
-$GLOBALS['wgMessagesDirs']['SimpleSAMLphp'] = __DIR__ . '/i18n';
-$GLOBALS['wgExtensionMessagesFiles']['SimpleSAMLphp'] =
-	__DIR__ . '/SimpleSAMLphp.i18n.php';
-
-$GLOBALS['wgSessionName'] = ini_get( 'session.name' );
 

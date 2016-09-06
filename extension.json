@@ -1,0 +1,22 @@
+{
+	"name": "SimpleSAMLphp",
+	"version": "2.0",
+	"author": [
+		"[https://www.mediawiki.org/wiki/User:Cindy.cicalese Cindy Cicalese]"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:SimpleSAMLphp",
+	"descriptionmsg": "simplesamlphp-desc",
+	"type": "other",
+	"MessagesDirs": {
+		"SimpleSAMLphp": [
+			"i18n"
+		]
+	},
+	"AutoloadClasses": {
+		"SimpleSAMLphp": "SimpleSAMLphp.php"
+	},
+	"manifest_version": 1,
+	"config": {
+		"PluggableAuth_Class": "SimpleSAMLphp"
+	}
+}
