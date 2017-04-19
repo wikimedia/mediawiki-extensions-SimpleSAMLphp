@@ -32,11 +32,18 @@ class SimpleSAMLphp extends PluggableAuth {
 	 * @param &$username
 	 * @param &$realname
 	 * @param &$email
+	 * @param &$errorMessage
 	 */
-	public function authenticate( &$id, &$username, &$realname, &$email ) {
+	public function authenticate( &$id, &$username, &$realname, &$email,
+		&$errorMessage ) {
 
 		$saml = $this->getSAMLClient();
-		$saml->requireAuth();
+		try {
+			$saml->requireAuth();
+		} catch ( Exception $e ) {
+			$errorMessage = $e->getMessage();
+			return false;
+		}
 		$attributes = $saml->getAttributes();
 
 		if ( isset( $GLOBALS['wgSimpleSAMLphp_RealNameAttribute'] ) ) {
@@ -50,6 +57,8 @@ class SimpleSAMLphp extends PluggableAuth {
 						}
 						$realname .= $attributes[$attribute][0];
 					} else {
+						wfDebug( 'SimpleSAMLphp: Could not find real name attribute ' .
+							$attribute );
 						return false;
 					}
 				}
@@ -57,36 +66,52 @@ class SimpleSAMLphp extends PluggableAuth {
 				if ( array_key_exists( $realNameAttribute, $attributes ) ) {
 					$realname = $attributes[$realNameAttribute][0];
 				} else {
+					wfDebug( 'SimpleSAMLphp: Could not find real name attribute ' .
+						$attributes );
 					return false;
 				}
 			}
 		} else {
+			wfDebug( 'SimpleSAMLphp: $wgSimpleSAMLphp_RealNameAttribute is not set' );
 			return false;
 		}
 
-		if ( isset( $GLOBALS['wgSimpleSAMLphp_EmailAttribute'] ) &&
-			array_key_exists( $GLOBALS['wgSimpleSAMLphp_EmailAttribute'],
+		if ( isset( $GLOBALS['wgSimpleSAMLphp_EmailAttribute'] ) ) {
+			if ( array_key_exists( $GLOBALS['wgSimpleSAMLphp_EmailAttribute'],
 				$attributes ) ) {
-			$email = $attributes[$GLOBALS['wgSimpleSAMLphp_EmailAttribute']][0];
-		} else {
-			return false;
-		}
-
-		if ( isset( $GLOBALS['wgSimpleSAMLphp_UsernameAttribute'] ) &&
-			array_key_exists( $GLOBALS['wgSimpleSAMLphp_UsernameAttribute'],
-			$attributes ) ) {
-			$username = strtolower(
-				$attributes[$GLOBALS['wgSimpleSAMLphp_UsernameAttribute']][0] );
-			$nt = Title::makeTitleSafe( NS_USER, $username );
-			if ( is_null( $nt ) ) {
+				$email = $attributes[$GLOBALS['wgSimpleSAMLphp_EmailAttribute']][0];
+			} else {
+				wfDebug( 'SimpleSAMLphp: Could not find email attribute ' .
+					$attributes );
 				return false;
 			}
-			$username = $nt->getText();
-			$id = User::idFromName( $username );
-			return true;
+		} else {
+			wfDebug( 'SimpleSAMLphp: $wgSimpleSAMLphp_EmailAttribute is not set' );
+			return false;
 		}
 
-		return false;
+		if ( isset( $GLOBALS['wgSimpleSAMLphp_UsernameAttribute'] ) ) {
+			if ( array_key_exists( $GLOBALS['wgSimpleSAMLphp_UsernameAttribute'],
+				$attributes ) ) {
+				$username = strtolower(
+					$attributes[$GLOBALS['wgSimpleSAMLphp_UsernameAttribute']][0] );
+				$nt = Title::makeTitleSafe( NS_USER, $username );
+				if ( is_null( $nt ) ) {
+					return false;
+				}
+				$username = $nt->getText();
+				$id = User::idFromName( $username );
+			} else {
+				wfDebug( 'SimpleSAMLphp: Could not find username attribute ' .
+					$attributes );
+				return false;
+			}
+		} else {
+			wfDebug( 'SimpleSAMLphp: $wgSimpleSAMLphp_UsernameAttribute is not set' );
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -121,7 +146,7 @@ class SimpleSAMLphp extends PluggableAuth {
 
 	private function getSAMLClient() {
 		require_once rtrim( $GLOBALS['wgSimpleSAMLphp_InstallDir'],
-			DIRECTORY_SEPARATOR ) .  DIRECTORY_SEPARATOR . 'lib' .
+			DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR . 'lib' .
 			DIRECTORY_SEPARATOR . '_autoload.php';
 		return new SimpleSAML_Auth_Simple(
 			$GLOBALS['wgSimpleSAMLphp_AuthSourceId'] );
