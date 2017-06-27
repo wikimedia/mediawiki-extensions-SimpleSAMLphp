@@ -37,7 +37,7 @@ class SimpleSAMLphp extends PluggableAuth {
 	public function authenticate( &$id, &$username, &$realname, &$email,
 		&$errorMessage ) {
 
-		$saml = $this->getSAMLClient();
+		$saml = self::getSAMLClient();
 		try {
 			$saml->requireAuth();
 		} catch ( Exception $e ) {
@@ -120,7 +120,7 @@ class SimpleSAMLphp extends PluggableAuth {
 	 * @param User &$user
 	 */
 	public function deauthenticate( User &$user ) {
-		$saml = $this->getSAMLClient();
+		$saml = self::getSAMLClient();
 		$returnto = null;
 		if ( array_key_exists( 'returnto', $_REQUEST ) ) {
 			$title = Title::newFromText( $_REQUEST['returnto'] );
@@ -144,7 +144,39 @@ class SimpleSAMLphp extends PluggableAuth {
 		// intentionally left blank
 	}
 
-	private function getSAMLClient() {
+	/**
+	 * @since 4.1
+	 * Update MediaWiki group membership of the authenticated user (given as object).
+	 * Override function of parent class to use groups from SAML attributes.
+	 * Credits to Extension:SimpleSamlAuth by Jorn de Jong
+	 * @param User &$user
+	 */
+	public static function populateGroups( User $user ) {
+		$saml = self::getSAMLClient();
+		$attributes = $saml->getAttributes();
+
+		if ( is_array( $GLOBALS['wgSimpleSAMLphp_GroupMap'] ) ) {
+			# group map: [mediawiki group][saml attribute][saml attribute value]
+			foreach ( $GLOBALS['wgSimpleSAMLphp_GroupMap'] as $group => $rules ) {
+				foreach ( $rules as $attrName => $needles ) {
+					if ( !isset( $attributes[$attrName] ) ) {
+						continue;
+					}
+					foreach ( $needles as $needle ) {
+						if ( in_array( $needle, $attributes[$attrName] ) ) {
+							$user->addGroup( $group );
+						} else {
+							$user->removeGroup( $group );
+						}
+					}
+				}
+			}
+		} else {
+			wfDebug( 'SimpleSAMLphp: $wgSimpleSAMLphp_GroupMap is not an array' );
+		}
+	}
+
+	private static function getSAMLClient() {
 		require_once rtrim( $GLOBALS['wgSimpleSAMLphp_InstallDir'],
 			DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR . 'lib' .
 			DIRECTORY_SEPARATOR . '_autoload.php';
@@ -152,4 +184,3 @@ class SimpleSAMLphp extends PluggableAuth {
 			$GLOBALS['wgSimpleSAMLphp_AuthSourceId'] );
 	}
 }
-
