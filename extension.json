@@ -1,6 +1,6 @@
 {
 	"name": "SimpleSAMLphp",
-	"version": "4.0",
+	"version": "4.1",
 	"author": [
 		"[https://www.mediawiki.org/wiki/User:Cindy.cicalese Cindy Cicalese]"
 	],
@@ -9,7 +9,7 @@
 	"type": "other",
 	"requires": {
 		"extensions": {
-			"PluggableAuth": ">= 4.0"
+			"PluggableAuth": ">= 5.1"
 		}
 	},
 	"MessagesDirs": {
@@ -20,7 +20,11 @@
 	"AutoloadClasses": {
 		"SimpleSAMLphp": "SimpleSAMLphp.class.php"
 	},
+	"Hooks": {
+		"PluggableAuthPopulateGroups": [ "SimpleSAMLphp::populateGroups" ]
+	},
 	"config": {
+		"SimpleSAMLphp_GroupMap": null,
 		"PluggableAuth_Class": "SimpleSAMLphp"
 	},
 	"manifest_version": 1
