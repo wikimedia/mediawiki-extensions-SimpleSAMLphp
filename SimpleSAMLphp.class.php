@@ -177,10 +177,12 @@ class SimpleSAMLphp extends PluggableAuth {
 	}
 
 	private static function getSAMLClient() {
-		require_once rtrim( $GLOBALS['wgSimpleSAMLphp_InstallDir'],
-			DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR . 'lib' .
-			DIRECTORY_SEPARATOR . '_autoload.php';
-		return new SimpleSAML_Auth_Simple(
-			$GLOBALS['wgSimpleSAMLphp_AuthSourceId'] );
+		require_once rtrim( $GLOBALS['wgSimpleSAMLphp_InstallDir'], '/' )
+			. '/lib/_autoload.php';
+		$class = "SimpleSAML_Auth_Simple";
+		if ( class_exists( 'SimpleSAML\Auth\Simple' ) ) {
+			$class = "SimpleSAML\\Auth\\Simple";
+		}
+		return new $class( $GLOBALS['wgSimpleSAMLphp_AuthSourceId'] );
 	}
 }
