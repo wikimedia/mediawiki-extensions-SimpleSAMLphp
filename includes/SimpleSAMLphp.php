@@ -21,22 +21,21 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-
-
 class SimpleSAMLphp extends PluggableAuth {
 
 	/**
 	 * @since 1.0
 	 *
-	 * @param &$id
-	 * @param &$username
-	 * @param &$realname
-	 * @param &$email
-	 * @param &$errorMessage
+	 * @param int &$userId id of user
+	 * @param string &$username username
+	 * @param string &$realname real name of user
+	 * @param string &$email email
+	 * @param string &$errorMessage any error encountered
+	 * @return bool true if the user is authenticated
+	 * @see https://www.mediawiki.org/wiki/Extension:PluggableAuth
 	 */
-	public function authenticate( &$id, &$username, &$realname, &$email,
+	public function authenticate( &$userId, &$username, &$realname, &$email,
 		&$errorMessage ) {
-
 		$saml = self::getSAMLClient();
 		try {
 			$saml->requireAuth();
@@ -117,7 +116,7 @@ class SimpleSAMLphp extends PluggableAuth {
 	/**
 	 * @since 1.0
 	 *
-	 * @param User &$user
+	 * @param User &$user to deauthenticate
 	 */
 	public function deauthenticate( User &$user ) {
 		$saml = self::getSAMLClient();
@@ -132,15 +131,14 @@ class SimpleSAMLphp extends PluggableAuth {
 			$returnto = Title::newMainPage()->getFullURL();
 		}
 		$saml->logout( $returnto );
-		return true;
 	}
 
 	/**
 	 * @since 1.0
 	 *
-	 * @param $id
+	 * @param int $userId id of user
 	 */
-	public function saveExtraAttributes( $id ) {
+	public function saveExtraAttributes( $userId ) {
 		// intentionally left blank
 	}
 
@@ -149,7 +147,7 @@ class SimpleSAMLphp extends PluggableAuth {
 	 * Update MediaWiki group membership of the authenticated user (given as object).
 	 * Override function of parent class to use groups from SAML attributes.
 	 * Credits to Extension:SimpleSamlAuth by Jorn de Jong
-	 * @param User &$user
+	 * @param User $user to get groups from SAML
 	 */
 	public static function populateGroups( User $user ) {
 		$saml = self::getSAMLClient();
