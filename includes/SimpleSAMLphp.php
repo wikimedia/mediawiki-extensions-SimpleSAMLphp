@@ -36,7 +36,6 @@ class SimpleSAMLphp extends PluggableAuth {
 	 * @param string &$errorMessage if you want to return an error message.
 	 * @return bool|string false if there was a problem getting the username.
 	 *
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 * @SuppressWarnings(PHPMD.Superglobals)
 	 */
 	protected function getUsername( &$username = '', &$userId = 0, &$errorMessage = null ) {
@@ -46,17 +45,18 @@ class SimpleSAMLphp extends PluggableAuth {
 				$username = strtolower( $this->attributes[$usernameAttr][0] );
 				$newTitle = Title::makeTitleSafe( NS_USER, $username );
 				if ( is_null( $newTitle ) ) {
+					$errorMessage = 'Invalid username: ' .  $username;
 					return false;
 				}
 				$username = $newTitle->getText();
 				$userId = User::idFromName( $username );
 			} else {
-				wfDebug( 'SimpleSAMLphp: Could not find username attribute: ' .
-					$usernameAttr );
+				$errorMessage = 'Could not find username attribute: ' .
+					$usernameAttr;
 				return false;
 			}
 		} else {
-			wfDebug( 'SimpleSAMLphp: $wgSimpleSAMLphp_UsernameAttribute is not set' );
+			$errorMessage = '$wgSimpleSAMLphp_UsernameAttribute is not set';
 			return false;
 		}
 		return $username;
@@ -70,7 +70,6 @@ class SimpleSAMLphp extends PluggableAuth {
 	 * @param string &$errorMessage if you want to return an error message.
 	 * @return bool|string false if no realname could be found
 	 *
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 * @SuppressWarnings(PHPMD.Superglobals)
 	 */
 	protected function getRealname( &$realname = '', &$errorMessage = null ) {
@@ -84,20 +83,20 @@ class SimpleSAMLphp extends PluggableAuth {
 						}
 						$realname .= $this->attributes[$attribute][0];
 					} else {
-						wfDebug( 'SimpleSAMLphp: Could not find real name attribute ' .
-							$attribute );
+						$errorMessage = 'Could not find real name attribute ' .
+							$attribute;
 						return false;
 					}
 				}
 			} elseif ( array_key_exists( $realNameAttribute, $this->attributes ) ) {
 				$realname = $this->attributes[$realNameAttribute][0];
 			} else {
-				wfDebug( 'SimpleSAMLphp: Could not find real name attribute: ' .
-					$realNameAttribute );
+				$errorMessage = 'Could not find real name attribute: ' .
+					$realNameAttribute;
 				return false;
 			}
 		} else {
-			wfDebug( 'SimpleSAMLphp: $wgSimpleSAMLphp_RealNameAttribute is not set' );
+			$errorMessage = '$wgSimpleSAMLphp_RealNameAttribute is not set';
 			return false;
 		}
 		return $realname;
@@ -111,7 +110,6 @@ class SimpleSAMLphp extends PluggableAuth {
 	 * @param string &$errorMessage if you want to return an error message.
 	 * @return bool|string false if no realname could be found
 	 *
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 * @SuppressWarnings(PHPMD.Superglobals)
 	 */
 	protected function getEmail( &$email = '', &$errorMessage = null ) {
@@ -120,11 +118,11 @@ class SimpleSAMLphp extends PluggableAuth {
 			if ( isset( $this->attributes[$emailAttr] ) ) {
 				$email = $this->attributes[$emailAttr][0];
 			} else {
-				wfDebug( 'SimpleSAMLphp: Could not find email attribute: ' . $emailAttr );
+				$errorMessage = 'Could not find email attribute: ' .  $emailAttr;
 				return false;
 			}
 		} else {
-			wfDebug( 'SimpleSAMLphp: $wgSimpleSAMLphp_EmailAttribute is not set' );
+			$errorMessage = '$wgSimpleSAMLphp_EmailAttribute is not set';
 			return false;
 		}
 		return $email;
@@ -149,6 +147,7 @@ class SimpleSAMLphp extends PluggableAuth {
 			$saml->requireAuth();
 		} catch ( Exception $e ) {
 			$errorMessage = $e->getMessage();
+			wfDebugLog( 'SimpleSAMLphp', $errorMessage );
 			return false;
 		}
 		$this->attributes = $saml->getAttributes();
@@ -160,6 +159,7 @@ class SimpleSAMLphp extends PluggableAuth {
 		) {
 			return true;
 		}
+		wfDebugLog( 'SimpleSAMLphp', $errorMessage );
 		return false;
 	}
 
@@ -232,7 +232,8 @@ class SimpleSAMLphp extends PluggableAuth {
 				}
 			}
 		} else {
-			wfDebug( 'SimpleSAMLphp: $wgSimpleSAMLphp_GroupMap is not an array' );
+			wfDebugLog( 'SimpleSAMLphp',
+				'$wgSimpleSAMLphp_GroupMap is not an array' );
 		}
 	}
 
