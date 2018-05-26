@@ -33,7 +33,7 @@ class SimpleSAMLphp extends PluggableAuth {
 	 *
 	 * @param string &$username going into this
 	 * @param int &$userId the user's id
-	 * @param string &$errorMessage if you want to return an error message.
+	 * @param string|null &$errorMessage if you want to return an error message.
 	 * @return bool|string false if there was a problem getting the username.
 	 *
 	 * @SuppressWarnings(PHPMD.Superglobals)
@@ -67,7 +67,7 @@ class SimpleSAMLphp extends PluggableAuth {
 	 * the appearance from what SAML gives.
 	 *
 	 * @param string &$realname going into this
-	 * @param string &$errorMessage if you want to return an error message.
+	 * @param string|null &$errorMessage if you want to return an error message.
 	 * @return bool|string false if no realname could be found
 	 *
 	 * @SuppressWarnings(PHPMD.Superglobals)
@@ -107,7 +107,7 @@ class SimpleSAMLphp extends PluggableAuth {
 	 * the appearance from what SAML gives.
 	 *
 	 * @param string &$email going into this
-	 * @param string &$errorMessage if you want to return an error message.
+	 * @param string|null &$errorMessage if you want to return an error message.
 	 * @return bool|string false if no realname could be found
 	 *
 	 * @SuppressWarnings(PHPMD.Superglobals)
@@ -135,7 +135,7 @@ class SimpleSAMLphp extends PluggableAuth {
 	 * @param string &$username username
 	 * @param string &$realname real name of user
 	 * @param string &$email email
-	 * @param string &$errorMessage any error encountered
+	 * @param string|null &$errorMessage any error encountered
 	 * @return bool true if the user is authenticated
 	 * @see https://www.mediawiki.org/wiki/Extension:PluggableAuth
 	 */
