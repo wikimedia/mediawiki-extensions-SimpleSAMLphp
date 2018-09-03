@@ -45,7 +45,7 @@ class SimpleSAMLphp extends PluggableAuth {
 				$username = strtolower( $this->attributes[$usernameAttr][0] );
 				$newTitle = Title::makeTitleSafe( NS_USER, $username );
 				if ( is_null( $newTitle ) ) {
-					$errorMessage = 'Invalid username: ' .  $username;
+					$errorMessage = 'Invalid username: ' . $username;
 					return false;
 				}
 				$username = $newTitle->getText();
@@ -118,7 +118,7 @@ class SimpleSAMLphp extends PluggableAuth {
 			if ( isset( $this->attributes[$emailAttr] ) ) {
 				$email = $this->attributes[$emailAttr][0];
 			} else {
-				$errorMessage = 'Could not find email attribute: ' .  $emailAttr;
+				$errorMessage = 'Could not find email attribute: ' . $emailAttr;
 				return false;
 			}
 		} else {
