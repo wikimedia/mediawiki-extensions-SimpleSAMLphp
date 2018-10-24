@@ -17,6 +17,10 @@
 			"i18n"
 		]
 	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\SimpleSAMLphp\\": "src/",
+		"MediaWiki\\Extension\\SimpleSAMLphp\\Tests\\": "tests/phpunit/"
+	},
 	"AutoloadClasses": {
 		"SimpleSAMLphp": "includes/SimpleSAMLphp.php"
 	},
@@ -25,7 +29,15 @@
 	},
 	"config": {
 		"SimpleSAMLphp_GroupMap": null,
-		"PluggableAuth_Class": "SimpleSAMLphp"
+		"@SimpleSAMLphp_GroupAttributeDelimiter": "If the SAML attribute for groups is not an array but a CSV string, this can be set to the appropriate delimiter (e.g. ',')",
+		"SimpleSAMLphp_GroupAttributeDelimiter": null,
+		"SimpleSAMLphp_SyncAllGroups_GroupAttributeName": "groups",
+		"SimpleSAMLphp_SyncAllGroups_LocallyManaged": [ "sysop" ],
+		"SimpleSAMLphp_SyncAllGroups_GroupNameModificationCallback": null,
+		"PluggableAuth_Class": "SimpleSAMLphp",
+		"SimpleSAMLphp_AttributeProcessorFactories": [
+			"MediaWiki\\Extension\\SimpleSAMLphp\\AttributeProcessor\\MapGroups::factory"
+		]
 	},
 	"manifest_version": 1
 }

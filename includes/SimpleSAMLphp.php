@@ -1,4 +1,7 @@
 <?php
+
+use MediaWiki\Extension\SimpleSAMLphp\IAttributeProcessor;
+
 /*
  * Copyright (c) 2014 The MITRE Corporation
  *
@@ -211,29 +214,16 @@ class SimpleSAMLphp extends PluggableAuth {
 		$saml = self::getSAMLClient();
 		$attributes = $saml->getAttributes();
 
-		# group map: [mediawiki group][saml attribute][saml attribute value]
-		$groupMap = isset( $GLOBALS['wgSimpleSAMLphp_GroupMap'] )
-				  ? $GLOBALS['wgSimpleSAMLphp_GroupMap']
-				  : null;
-
-		if ( is_array( $groupMap ) ) {
-			foreach ( $groupMap as $group => $rules ) {
-				foreach ( $rules as $attrName => $needles ) {
-					if ( !isset( $attributes[$attrName] ) ) {
-						continue;
-					}
-					foreach ( $needles as $needle ) {
-						if ( in_array( $needle, $attributes[$attrName] ) ) {
-							$user->addGroup( $group );
-						} else {
-							$user->removeGroup( $group );
-						}
-					}
-				}
+		$config = new GlobalVarConfig( 'wgSimpleSAMLphp_' );
+		$attributeProcessorFactories = $config->get( 'AttributeProcessorFactories' );
+		foreach ( $attributeProcessorFactories as $attributeProcessorFactory ) {
+			$attributeProcessor = $attributeProcessorFactory( $user, $attributes, $config, $saml );
+			if ( $attributeProcessor instanceof IAttributeProcessor === false ) {
+				throw new MWException(
+					"Factory '$attributeProcessorFactory' returned an invalid AttributeProcessor!"
+				);
 			}
-		} else {
-			wfDebugLog( 'SimpleSAMLphp',
-				'$wgSimpleSAMLphp_GroupMap is not an array' );
+			$attributeProcessor->run();
 		}
 	}
 
@@ -241,6 +231,10 @@ class SimpleSAMLphp extends PluggableAuth {
 	 * @SuppressWarnings(PHPMD.Superglobals)
 	 */
 	private static function getSAMLClient() {
+		// Make MW core `SpecialPageFatalTest` pass
+		if ( defined( 'MW_PHPUNIT_TEST' ) ) {
+			return new MediaWiki\Extension\SimpleSAMLphp\Tests\Dummy\SimpleSAML\Auth\Simple();
+		}
 		require_once rtrim( $GLOBALS['wgSimpleSAMLphp_InstallDir'], '/' )
 			. '/lib/_autoload.php';
 		$class = 'SimpleSAML_Auth_Simple';
