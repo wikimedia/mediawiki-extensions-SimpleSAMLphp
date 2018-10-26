@@ -8,6 +8,7 @@
 	"descriptionmsg": "simplesamlphp-desc",
 	"type": "other",
 	"requires": {
+		"MediaWiki": ">= 1.31.0",
 		"extensions": {
 			"PluggableAuth": ">= 5.1"
 		}
