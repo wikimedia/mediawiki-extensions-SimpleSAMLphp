@@ -202,15 +202,15 @@ class SimpleSAMLphp extends PluggableAuth {
 
 	/**
 	 * @since 4.1
-	 * Update MediaWiki group membership of the authenticated user (given as object).
-	 * Override function of parent class to use groups from SAML attributes.
-	 * Credits to Extension:SimpleSamlAuth by Jorn de Jong
+	 * Update MediaWiki group membership of the authenticated user.
+	 * Implement PluggableAuthPopulateGroups hook from PluggableAuth
+	 * to use groups from SAML attributes.
 	 *
-	 * @param User &$user to get groups from SAML
+	 * @param User $user to get groups from SAML
 	 *
 	 * @SuppressWarnings(PHPMD.Superglobals)
 	 */
-	public static function populateGroups( User &$user ) {
+	public static function populateGroups( User $user ) {
 		$saml = self::getSAMLClient();
 		$attributes = $saml->getAttributes();
 
