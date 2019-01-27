@@ -1,6 +1,6 @@
 {
 	"name": "SimpleSAMLphp",
-	"version": "4.4",
+	"version": "4.5",
 	"author": [
 		"[https://www.mediawiki.org/wiki/User:Cindy.cicalese Cindy Cicalese]"
 	],
@@ -58,6 +58,13 @@
 			"value":  [
 				"MediaWiki\\Extension\\SimpleSAMLphp\\AttributeProcessor\\MapGroups::factory"
 			]
+		},
+		"SimpleSAMLphp_MandatoryUserInfoProviderFactories": {
+			"value":  {
+				"username": "MediaWiki\\Extension\\SimpleSAMLphp\\UserInfoProvider\\LowerCasedUsername::factory",
+				"realname": "MediaWiki\\Extension\\SimpleSAMLphp\\UserInfoProvider\\Realname::factory",
+				"email": "MediaWiki\\Extension\\SimpleSAMLphp\\UserInfoProvider\\Email::factory"
+			}
 		},
 		"PluggableAuth_Class": {
 			"value":  "SimpleSAMLphp"

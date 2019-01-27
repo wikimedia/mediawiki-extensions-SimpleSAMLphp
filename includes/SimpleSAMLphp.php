@@ -1,6 +1,7 @@
 <?php
 
 use MediaWiki\Extension\SimpleSAMLphp\IAttributeProcessor;
+use MediaWiki\Extension\SimpleSAMLphp\IUserInfoProvider;
 
 /*
  * Copyright (c) 2014 The MITRE Corporation
@@ -28,107 +29,62 @@ use MediaWiki\Extension\SimpleSAMLphp\IAttributeProcessor;
  */
 class SimpleSAMLphp extends PluggableAuth {
 
-	protected $attributes;
+	/**
+	 *
+	 * @var array
+	 */
+	private $attributes = [];
 
 	/**
-	 * Get the user's username.  Override this if you need to change
-	 * the appearance from what SAML gives.
 	 *
-	 * @param string &$username going into this
-	 * @param int &$userId the user's id
-	 * @param string|null &$errorMessage if you want to return an error message.
-	 * @return bool|string false if there was a problem getting the username.
-	 *
-	 * @SuppressWarnings(PHPMD.Superglobals)
+	 * @var int
 	 */
-	protected function getUsername( &$username = '', &$userId = 0, &$errorMessage = null ) {
-		if ( isset( $GLOBALS['wgSimpleSAMLphp_UsernameAttribute'] ) ) {
-			$usernameAttr = $GLOBALS['wgSimpleSAMLphp_UsernameAttribute'];
-			if ( isset( $this->attributes[$usernameAttr] ) ) {
-				$username = strtolower( $this->attributes[$usernameAttr][0] );
-				$newTitle = Title::makeTitleSafe( NS_USER, $username );
-				if ( is_null( $newTitle ) ) {
-					$errorMessage = 'Invalid username: ' . $username;
-					return false;
-				}
-				$username = $newTitle->getText();
-				$userId = User::idFromName( $username );
-			} else {
-				$errorMessage = 'Could not find username attribute: ' .
-					$usernameAttr;
-				return false;
-			}
-		} else {
-			$errorMessage = '$wgSimpleSAMLphp_UsernameAttribute is not set';
-			return false;
-		}
-		return $username;
+	private $userId = 0;
+
+	/**
+	 *
+	 * @var string
+	 */
+	private $username = '';
+
+	/**
+	 *
+	 * @var string
+	 */
+	private $realname = '';
+
+	/**
+	 *
+	 * @var string
+	 */
+	private $email = '';
+
+	/**
+	 * Get the user's username and the id.
+	 * @throws Exception
+	 */
+	private function initUsernameAndId() {
+		$usernameProvider = $this->makeUserInfoProvider( 'username' );
+		$this->username = $usernameProvider->getValue( $this->attributes );
+		$this->userId = User::idFromName( $this->username );
 	}
 
 	/**
-	 * Get the user's real name.  Override this if you need to change
-	 * the appearance from what SAML gives.
-	 *
-	 * @param string &$realname going into this
-	 * @param string|null &$errorMessage if you want to return an error message.
-	 * @return bool|string false if no realname could be found
-	 *
-	 * @SuppressWarnings(PHPMD.Superglobals)
+	 * Get the user's real name.
+	 * @throws Exception
 	 */
-	protected function getRealname( &$realname = '', &$errorMessage = null ) {
-		if ( isset( $GLOBALS['wgSimpleSAMLphp_RealNameAttribute'] ) ) {
-			$realNameAttribute = $GLOBALS['wgSimpleSAMLphp_RealNameAttribute'];
-			if ( is_array( $realNameAttribute ) ) {
-				foreach ( $realNameAttribute as $attribute ) {
-					if ( array_key_exists( $attribute, $this->attributes ) ) {
-						if ( $realname != '' ) {
-							$realname .= ' ';
-						}
-						$realname .= $this->attributes[$attribute][0];
-					} else {
-						$errorMessage = 'Could not find real name attribute ' .
-							$attribute;
-						return false;
-					}
-				}
-			} elseif ( array_key_exists( $realNameAttribute, $this->attributes ) ) {
-				$realname = $this->attributes[$realNameAttribute][0];
-			} else {
-				$errorMessage = 'Could not find real name attribute: ' .
-					$realNameAttribute;
-				return false;
-			}
-		} else {
-			$errorMessage = '$wgSimpleSAMLphp_RealNameAttribute is not set';
-			return false;
-		}
-		return $realname;
+	private function initRealname() {
+		$realnameProvider = $this->makeUserInfoProvider( 'realname' );
+		$this->realname = $realnameProvider->getValue( $this->attributes );
 	}
 
 	/**
-	 * Get the user's email address.  Override this if you need to change
-	 * the appearance from what SAML gives.
-	 *
-	 * @param string &$email going into this
-	 * @param string|null &$errorMessage if you want to return an error message.
-	 * @return bool|string false if no realname could be found
-	 *
-	 * @SuppressWarnings(PHPMD.Superglobals)
+	 * Get the user's email address.
+	 * @throws Exception
 	 */
-	protected function getEmail( &$email = '', &$errorMessage = null ) {
-		if ( isset( $GLOBALS['wgSimpleSAMLphp_EmailAttribute'] ) ) {
-			$emailAttr = $GLOBALS['wgSimpleSAMLphp_EmailAttribute'];
-			if ( isset( $this->attributes[$emailAttr] ) ) {
-				$email = $this->attributes[$emailAttr][0];
-			} else {
-				$errorMessage = 'Could not find email attribute: ' . $emailAttr;
-				return false;
-			}
-		} else {
-			$errorMessage = '$wgSimpleSAMLphp_EmailAttribute is not set';
-			return false;
-		}
-		return $email;
+	private function initEmail() {
+		$emailProvider = $this->makeUserInfoProvider( 'email' );
+		$this->email = $emailProvider->getValue( $this->attributes );
 	}
 
 	/**
@@ -155,15 +111,23 @@ class SimpleSAMLphp extends PluggableAuth {
 		}
 		$this->attributes = $saml->getAttributes();
 
-		if (
-			( $this->getUsername( $username, $userId, $errorMessage ) !== false ) &&
-			( $this->getRealName( $realname, $errorMessage ) !== false ) &&
-			( $this->getEmail( $email, $errorMessage ) !== false )
-		) {
-			return true;
+		try {
+			$this->initUsernameAndId();
+			$this->initRealname();
+			$this->initEmail();
+
+			$userId = $this->userId;
+			$username = $this->username;
+			$realname = $this->realname;
+			$email = $this->email;
 		}
-		wfDebugLog( 'SimpleSAMLphp', $errorMessage );
-		return false;
+		catch ( Exception $ex ) {
+			$errorMessage = $ex->getMessage();
+			wfDebugLog( 'SimpleSAMLphp', $errorMessage );
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -177,7 +141,7 @@ class SimpleSAMLphp extends PluggableAuth {
 	public function deauthenticate( User &$user ) {
 		$saml = self::getSAMLClient();
 		$returnto = null;
-		if ( array_key_exists( 'returnto', $_REQUEST ) ) {
+		if ( isset( $_REQUEST['returnto'] ) ) {
 			$title = Title::newFromText( $_REQUEST['returnto'] );
 			if ( !is_null( $title ) ) {
 				$returnto = $title->getFullURL();
@@ -243,4 +207,30 @@ class SimpleSAMLphp extends PluggableAuth {
 		}
 		return new $class( $GLOBALS['wgSimpleSAMLphp_AuthSourceId'] );
 	}
+
+	/**
+	 *
+	 * @param string $infoName
+	 * @return IUserInfoProvider
+	 * @throws Exception
+	 */
+	private function makeUserInfoProvider( $infoName ) {
+		$config = new GlobalVarConfig( 'wgSimpleSAMLphp_' );
+		$userInfoProviderFactories = $config->get( 'MandatoryUserInfoProviderFactories' );
+		if ( !isset( $userInfoProviderFactories[$infoName] ) ) {
+			throw new Exception( "No factory callback set for '$infoName'!" );
+		}
+		$factoryCallback = $userInfoProviderFactories[$infoName];
+		if ( !is_callable( $factoryCallback ) ) {
+			throw new Exception( "Invalid factory callback set for '$infoName'!" );
+		}
+
+		$provider = call_user_func_array( $factoryCallback, [ $config ] );
+		if ( $provider instanceof IUserInfoProvider === false ) {
+			throw new Exception( "Provider for '$infoName' does not implement IUserInfoProvider!" );
+		}
+
+		return $provider;
+	}
+
 }
