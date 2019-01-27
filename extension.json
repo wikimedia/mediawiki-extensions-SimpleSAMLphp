@@ -29,16 +29,39 @@
 		"PluggableAuthPopulateGroups": [ "SimpleSAMLphp::populateGroups" ]
 	},
 	"config": {
-		"SimpleSAMLphp_GroupMap": null,
-		"@SimpleSAMLphp_GroupAttributeDelimiter": "If the SAML attribute for groups is not an array but a CSV string, this can be set to the appropriate delimiter (e.g. ',')",
-		"SimpleSAMLphp_GroupAttributeDelimiter": null,
-		"SimpleSAMLphp_SyncAllGroups_GroupAttributeName": "groups",
-		"SimpleSAMLphp_SyncAllGroups_LocallyManaged": [ "sysop" ],
-		"SimpleSAMLphp_SyncAllGroups_GroupNameModificationCallback": null,
-		"PluggableAuth_Class": "SimpleSAMLphp",
-		"SimpleSAMLphp_AttributeProcessorFactories": [
-			"MediaWiki\\Extension\\SimpleSAMLphp\\AttributeProcessor\\MapGroups::factory"
-		]
+		"SimpleSAMLphp_UsernameAttribute": {
+			"value":  null
+		},
+		"SimpleSAMLphp_RealNameAttribute": {
+			"value":  null
+		},
+		"SimpleSAMLphp_EmailAttribute": {
+			"value":  null
+		},
+		"SimpleSAMLphp_GroupMap": {
+			"value":  null
+		},
+		"SimpleSAMLphp_GroupAttributeDelimiter": {
+			"value":  null,
+			"description": "If the SAML attribute for groups is not an array but a CSV string, this can be set to the appropriate delimiter (e.g. ',')"
+		},
+		"SimpleSAMLphp_SyncAllGroups_GroupAttributeName": {
+			"value":  "groups"
+		},
+		"SimpleSAMLphp_SyncAllGroups_LocallyManaged": {
+			"value":  [ "sysop" ]
+		},
+		"SimpleSAMLphp_SyncAllGroups_GroupNameModificationCallback": {
+			"value":  null
+		},
+		"SimpleSAMLphp_AttributeProcessorFactories": {
+			"value":  [
+				"MediaWiki\\Extension\\SimpleSAMLphp\\AttributeProcessor\\MapGroups::factory"
+			]
+		},
+		"PluggableAuth_Class": {
+			"value":  "SimpleSAMLphp"
+		}
 	},
-	"manifest_version": 1
+	"manifest_version": 2
 }
