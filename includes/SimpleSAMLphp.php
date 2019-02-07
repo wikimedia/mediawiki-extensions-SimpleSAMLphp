@@ -179,7 +179,7 @@ class SimpleSAMLphp extends PluggableAuth {
 		$returnto = null;
 		if ( array_key_exists( 'returnto', $_REQUEST ) ) {
 			$title = Title::newFromText( $_REQUEST['returnto'] );
-			if ( ! is_null( $title ) ) {
+			if ( !is_null( $title ) ) {
 				$returnto = $title->getFullURL();
 			}
 		}
