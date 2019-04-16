@@ -20,9 +20,12 @@ class MapGroups extends Base {
 
 		foreach ( $this->groupMap as $group => $rules ) {
 			$group = trim( $group );
+			$groupAdded = false;
 
 			foreach ( $rules as $attrName => $needles ) {
-				if ( !isset( $this->attributes[$attrName] ) ) {
+				if ( $groupAdded == true ) {
+					break;
+				} elseif ( !isset( $this->attributes[$attrName] ) ) {
 					continue;
 				}
 				$samlProvidedGroups = $this->attributes[$attrName];
@@ -34,6 +37,7 @@ class MapGroups extends Base {
 						$this->user->addGroup( $group );
 						// This differs from the original implementation: Otherwise the _last_ group
 						// in the list would always determine whether a group should be added or not
+						$groupAdded = true;
 						break;
 					} else {
 						$this->user->removeGroup( $group );
