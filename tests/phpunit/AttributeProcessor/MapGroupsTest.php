@@ -117,6 +117,24 @@ class MapGroupsTest extends MediaWikiTestCase {
 				],
 				[ 'abc', 'sysop' ],
 				[ 'sysop' ]
+			],
+			'Topic:V1k0yrv1f3ir7y6r-1' => [
+				[ 'businessCategory' => [ 'B', 'N', 'Z' ] ],
+				[
+					'GroupMap' => [ 'staffer' => [ 'businessCategory' => [ 'B', 'N', 'Z' ] ] ],
+					'GroupAttributeDelimiter' => null
+				],
+				[ 'abc' ],
+				[ 'abc', 'staffer' ]
+			],
+			'Topic:V1k0yrv1f3ir7y6r-2' => [
+				[ 'businessCategory' => [ 'B,N,Z' ] ],
+				[
+					'GroupMap' => [ 'staffer' => [ 'businessCategory' => [ 'B', 'N', 'Z' ] ] ],
+					'GroupAttributeDelimiter' => ','
+				],
+				[ 'abc' ],
+				[ 'abc', 'staffer' ]
 			]
 		];
 	}
