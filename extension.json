@@ -39,7 +39,7 @@
 			"value":  null
 		},
 		"SimpleSAMLphp_GroupMap": {
-			"value":  null
+			"value":  []
 		},
 		"SimpleSAMLphp_GroupAttributeDelimiter": {
 			"value":  null,
