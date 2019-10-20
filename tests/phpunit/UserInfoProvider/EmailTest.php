@@ -2,6 +2,7 @@
 
 namespace MediaWiki\Extension\SimpleSAMLphp\Tests\UserInfoProvider;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\Email;
 use HashConfig;
@@ -34,10 +35,10 @@ class EmailTest extends TestCase {
 
 	/**
 	 * @covers MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\Email::getValue
-	 * @expectedException Exception
 	 */
 	public function testBadConfigException() {
 		$provider = Email::factory( new HashConfig( [] ) );
+		$this->expectException( Exception::class );
 		$provider->getValue( [
 			'mail' => [
 				'someone@somewhere.com'
@@ -47,12 +48,12 @@ class EmailTest extends TestCase {
 
 	/**
 	 * @covers MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\Email::getValue
-	 * @expectedException Exception
 	 */
 	public function testMissingAttributeException() {
 		$provider = Email::factory( new HashConfig( [
 			'EmailAttribute' => 'mail'
 		] ) );
+		$this->expectException( Exception::class );
 		$provider->getValue( [] );
 	}
 

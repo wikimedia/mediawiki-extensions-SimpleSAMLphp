@@ -2,6 +2,7 @@
 
 namespace MediaWiki\Extension\SimpleSAMLphp\Tests\UserInfoProvider;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\Realname;
 use HashConfig;
@@ -34,10 +35,10 @@ class RealnameTest extends TestCase {
 
 	/**
 	 * @covers MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\Realname::getValue
-	 * @expectedException Exception
 	 */
 	public function testBadConfigException() {
 		$provider = Realname::factory( new HashConfig( [] ) );
+		$this->expectException( Exception::class );
 		$provider->getValue( [
 			'realname' => [
 				'John Doe'
@@ -47,12 +48,12 @@ class RealnameTest extends TestCase {
 
 	/**
 	 * @covers MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\Realname::getValue
-	 * @expectedException Exception
 	 */
 	public function testMissingAttributeException() {
 		$provider = Realname::factory( new HashConfig( [
 			'RealNameAttribute' => 'realname'
 		] ) );
+		$this->expectException( Exception::class );
 		$provider->getValue( [] );
 	}
 

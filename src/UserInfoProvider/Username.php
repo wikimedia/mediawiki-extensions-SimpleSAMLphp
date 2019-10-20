@@ -2,8 +2,8 @@
 
 namespace MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider;
 
-use \Exception;
-use \Title;
+use Exception;
+use Title;
 
 class Username extends Base {
 

@@ -2,7 +2,7 @@
 
 namespace MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider;
 
-use \Exception;
+use Exception;
 
 class Realname extends Base {
 

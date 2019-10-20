@@ -2,6 +2,7 @@
 
 namespace MediaWiki\Extension\SimpleSAMLphp\Tests\UserInfoProvider;
 
+use Exception;
 use MediaWikiTestCase;
 use MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\LowerCasedUsername;
 use HashConfig;
@@ -34,10 +35,10 @@ class LowerCasedUsernameTest extends MediaWikiTestCase {
 
 	/**
 	 * @covers MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\LowerCasedUsername::getValue
-	 * @expectedException Exception
 	 */
 	public function testBadConfigException() {
 		$provider = LowerCasedUsername::factory( new HashConfig( [] ) );
+		$this->expectException( Exception::class );
 		$provider->getValue( [
 			'username' => [
 				'John Doe'
@@ -47,23 +48,23 @@ class LowerCasedUsernameTest extends MediaWikiTestCase {
 
 	/**
 	 * @covers MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\LowerCasedUsername::getValue
-	 * @expectedException Exception
 	 */
 	public function testMissingAttributeException() {
 		$provider = LowerCasedUsername::factory( new HashConfig( [
 			'UsernameAttribute' => 'username'
 		] ) );
+		$this->expectException( Exception::class );
 		$provider->getValue( [] );
 	}
 
 	/**
 	 * @covers MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\LowerCasedUsername::getValue
-	 * @expectedException Exception
 	 */
 	public function testInvalidLowerCasedUsernameException() {
 		$provider = LowerCasedUsername::factory( new HashConfig( [
 			'UsernameAttribute' => 'username'
 		] ) );
+		$this->expectException( Exception::class );
 		$provider->getValue( [
 			'username' => [
 				'John Doe|invalid'
