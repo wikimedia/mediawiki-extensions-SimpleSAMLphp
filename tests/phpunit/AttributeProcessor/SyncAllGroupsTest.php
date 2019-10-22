@@ -9,6 +9,13 @@ use TestUserRegistry;
 
 class SyncAllGroupsTest extends MediaWikiTestCase {
 
+	public function setUp() : void {
+		parent::setUp();
+		if ( !class_exists( \SimpleSAML\Auth\Simple::class ) ) {
+			$this->markTestSkipped( 'SimpleSAMLphp must be installed' );
+		}
+	}
+
 	/**
 	 * @covers MediaWiki\Extension\SimpleSAMLphp\AttributeProcessor\SyncAllGroups::factory
 	 */
@@ -16,10 +23,10 @@ class SyncAllGroupsTest extends MediaWikiTestCase {
 		$factoryMethod =
 			'MediaWiki\\Extension\\SimpleSAMLphp\\AttributeProcessor\\SyncAllGroups::factory';
 
-		$user = $this->getMock( '\User' );
+		$user = $this->createMock( \User::class );
 		$attributes = [];
 		$config = new HashConfig( [] );
-		$saml = $this->getMock( '\SimpleSAML\Auth\Simple' );
+		$saml = $this->createMock( \SimpleSAML\Auth\Simple::class );
 
 		$processor = $factoryMethod( $user, $attributes, $config, $saml );
 
@@ -46,7 +53,7 @@ class SyncAllGroupsTest extends MediaWikiTestCase {
 		$testUser = TestUserRegistry::getMutableTestUser( 'MapGroupsTestUser', $initialGroups );
 		$user = $testUser->getUser();
 		$config = new HashConfig( $configArray );
-		$saml = $this->getMock( '\SimpleSAML\Auth\Simple' );
+		$saml = $this->createMock( \SimpleSAML\Auth\Simple::class );
 
 		$processor = $factoryMethod( $user, $attributes, $config, $saml );
 		$processor->run();
