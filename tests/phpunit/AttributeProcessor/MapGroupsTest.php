@@ -6,15 +6,9 @@ use MediaWikiTestCase;
 use MediaWiki\Extension\SimpleSAMLphp\IAttributeProcessor;
 use HashConfig;
 use TestUserRegistry;
+use MediaWiki\Extension\SimpleSAMLphp\Tests\Dummy\SimpleSAML\Auth\Simple;
 
 class MapGroupsTest extends MediaWikiTestCase {
-
-	public function setUp() : void {
-		parent::setUp();
-		if ( !class_exists( \SimpleSAML\Auth\Simple::class ) ) {
-			$this->markTestSkipped( 'SimpleSAMLphp must be installed' );
-		}
-	}
 
 	/**
 	 * @covers MediaWiki\Extension\SimpleSAMLphp\AttributeProcessor\MapGroups::factory
@@ -26,7 +20,7 @@ class MapGroupsTest extends MediaWikiTestCase {
 		$user = $this->createMock( \User::class );
 		$attributes = [];
 		$config = new HashConfig( [] );
-		$saml = $this->createMock( \SimpleSAML\Auth\Simple::class );
+		$saml = new Simple();
 
 		$processor = $factoryMethod( $user, $attributes, $config, $saml );
 
@@ -53,7 +47,7 @@ class MapGroupsTest extends MediaWikiTestCase {
 		$testUser = TestUserRegistry::getMutableTestUser( 'MapGroupsTestUser', $initialGroups );
 		$user = $testUser->getUser();
 		$config = new HashConfig( $configArray );
-		$saml = $this->createMock( \SimpleSAML\Auth\Simple::class );
+		$saml = new Simple();
 
 		$processor = $factoryMethod( $user, $attributes, $config, $saml );
 		$processor->run();
@@ -89,6 +83,27 @@ class MapGroupsTest extends MediaWikiTestCase {
 				],
 				[ 'abc' ],
 				[ 'abc', 'sysop' ]
+			],
+			'two-attribbutes' => [
+				[
+					'member' => [ 'saml-group-1', 'saml-group-2', 'saml-group-3' ],
+					'NameId' => [ 'saml-firstname.lastname-1' ],
+				],
+				[
+					'GroupMap' => [
+						'editor' => [
+							'member' => [ 'saml-group-1' ],
+							'NameId' => [ 'saml-firstname.lastname-2', 'saml-firstname.lastname-3' ],
+						],
+						'sysop' => [
+							'member' => [ 'saml-group-1' ],
+							'NameId' => [ 'saml-firstname.lastname-2', 'saml-firstname.lastname-3' ],
+						],
+					],
+					'GroupAttributeDelimiter' => null
+				],
+				[ 'abc' ],
+				[ 'abc', 'editor', 'sysop' ]
 			]
 		];
 	}
