@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"BaRaN6161 TURK"
+		]
+	},
+	"simplesamlphp-desc": "PluggableAuth ile birlikte SimpleSAMLphp kullanarak kimlik doğrulama sağlar"
+}
