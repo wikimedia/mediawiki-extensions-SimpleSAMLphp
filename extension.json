@@ -20,7 +20,9 @@
 		]
 	},
 	"AutoloadNamespaces": {
-		"MediaWiki\\Extension\\SimpleSAMLphp\\": "src/",
+		"MediaWiki\\Extension\\SimpleSAMLphp\\": "src/"
+	},
+	"TestAutoloadNamespaces": {
 		"MediaWiki\\Extension\\SimpleSAMLphp\\Tests\\": "tests/phpunit/"
 	},
 	"AutoloadClasses": {
