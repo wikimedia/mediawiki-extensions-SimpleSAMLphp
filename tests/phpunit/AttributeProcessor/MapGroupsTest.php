@@ -2,11 +2,11 @@
 
 namespace MediaWiki\Extension\SimpleSAMLphp\Tests\AttributeProcessor;
 
-use MediaWikiTestCase;
-use MediaWiki\Extension\SimpleSAMLphp\IAttributeProcessor;
 use HashConfig;
-use TestUserRegistry;
+use MediaWiki\Extension\SimpleSAMLphp\IAttributeProcessor;
 use MediaWiki\Extension\SimpleSAMLphp\Tests\Dummy\SimpleSAML\Auth\Simple;
+use MediaWikiTestCase;
+use TestUserRegistry;
 
 class MapGroupsTest extends MediaWikiTestCase {
 

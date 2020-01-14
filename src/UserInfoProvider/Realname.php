@@ -15,7 +15,7 @@ class Realname extends Base {
 		$realNameAttr = $this->config->get( 'RealNameAttribute' );
 		$realname = '';
 
-		if ( is_null( $realNameAttr ) ) {
+		if ( $realNameAttr === null ) {
 			throw new Exception( '$wgSimpleSAMLphp_RealNameAttribute is not set' );
 		}
 

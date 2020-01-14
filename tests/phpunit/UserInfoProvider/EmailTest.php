@@ -3,9 +3,9 @@
 namespace MediaWiki\Extension\SimpleSAMLphp\Tests\UserInfoProvider;
 
 use Exception;
-use PHPUnit\Framework\TestCase;
-use MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\Email;
 use HashConfig;
+use MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\Email;
+use PHPUnit\Framework\TestCase;
 
 class EmailTest extends TestCase {
 

@@ -3,9 +3,9 @@
 namespace MediaWiki\Extension\SimpleSAMLphp\Tests\UserInfoProvider;
 
 use Exception;
-use MediaWikiTestCase;
-use MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\Username;
 use HashConfig;
+use MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\Username;
+use MediaWikiTestCase;
 
 class UsernameTest extends MediaWikiTestCase {
 

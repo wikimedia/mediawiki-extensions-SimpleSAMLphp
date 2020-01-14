@@ -16,7 +16,7 @@ class Username extends Base {
 		$usernameAttr = $this->config->get( 'UsernameAttribute' );
 		$username = '';
 
-		if ( is_null( $usernameAttr ) ) {
+		if ( $usernameAttr === null ) {
 			throw new Exception( '$wgSimpleSAMLphp_UsernameAttribute is not set' );
 		}
 
@@ -26,7 +26,7 @@ class Username extends Base {
 
 		$username = $this->normalizeUsername( $samlattributes[$usernameAttr][0] );
 		$newTitle = Title::makeTitleSafe( NS_USER, $username );
-		if ( is_null( $newTitle ) ) {
+		if ( $newTitle === null ) {
 			throw new Exception( 'Invalid username: ' . $username );
 		}
 

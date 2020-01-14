@@ -2,8 +2,8 @@
 
 namespace MediaWiki\Extension\SimpleSAMLphp\Tests\UserInfoProvider;
 
-use PHPUnit\Framework\TestCase;
 use MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\GenericCallback;
+use PHPUnit\Framework\TestCase;
 
 class GenericCallbackTest extends TestCase {
 

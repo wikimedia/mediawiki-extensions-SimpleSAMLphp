@@ -15,7 +15,7 @@ class Email extends Base {
 		$emailAttr = $this->config->get( 'EmailAttribute' );
 		$email = '';
 
-		if ( is_null( $emailAttr ) ) {
+		if ( $emailAttr === null ) {
 			throw new Exception( '$wgSimpleSAMLphp_EmailAttribute is not set' );
 		}
 		if ( !isset( $samlattributes[$emailAttr] ) ) {

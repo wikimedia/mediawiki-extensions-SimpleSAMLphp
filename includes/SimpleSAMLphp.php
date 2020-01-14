@@ -143,11 +143,11 @@ class SimpleSAMLphp extends PluggableAuth {
 		$returnto = null;
 		if ( isset( $_REQUEST['returnto'] ) ) {
 			$title = Title::newFromText( $_REQUEST['returnto'] );
-			if ( !is_null( $title ) ) {
+			if ( $title !== null ) {
 				$returnto = $title->getFullURL();
 			}
 		}
-		if ( is_null( $returnto ) ) {
+		if ( $returnto === null ) {
 			$returnto = Title::newMainPage()->getFullURL();
 		}
 		$saml->logout( $returnto );
