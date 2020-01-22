@@ -1,4 +1,20 @@
 {
+	"name": "mediawiki/simple-s-a-m-lphp",
+	"type": "mediawiki-extension",
+	"description": "Provides authentication using SimpleSAMLphp in conjunction with PluggableAuth",
+	"keywords": [
+		"SAML",
+		"Authentication",
+		"Wiki",
+		"MediaWiki"
+	],
+	"homepage": "https://www.mediawiki.org/wiki/Extension:SimpleSAMLphp",
+	"authors": [
+		{
+			"name": "Cindy Cicalese",
+			"homepage": "https://www.mediawiki.org/wiki/User:Cindy.cicalese"
+		}
+	],
 	"require-dev": {
 		"jakub-onderka/php-parallel-lint": "1.0.0",
 		"mediawiki/mediawiki-codesniffer": "29.0.0",
