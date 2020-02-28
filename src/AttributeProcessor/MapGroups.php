@@ -26,6 +26,7 @@ class MapGroups extends Base {
 				if ( $groupAdded == true ) {
 					break;
 				} elseif ( !isset( $this->attributes[$attrName] ) ) {
+					$this->user->removeGroup( $group );
 					continue;
 				}
 				$samlProvidedGroups = $this->attributes[$attrName];

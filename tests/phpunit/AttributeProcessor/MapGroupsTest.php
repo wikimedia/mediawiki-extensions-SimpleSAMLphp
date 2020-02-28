@@ -84,7 +84,7 @@ class MapGroupsTest extends MediaWikiTestCase {
 				[ 'abc' ],
 				[ 'abc', 'sysop' ]
 			],
-			'two-attribbutes' => [
+			'two-attributes' => [
 				[
 					'member' => [ 'saml-group-1', 'saml-group-2', 'saml-group-3' ],
 					'NameId' => [ 'saml-firstname.lastname-1' ],
@@ -104,6 +104,19 @@ class MapGroupsTest extends MediaWikiTestCase {
 				],
 				[ 'abc' ],
 				[ 'abc', 'editor', 'sysop' ]
+			],
+			'delete' => [
+				[
+					// Not in SAML attributes anymore
+					// 'has-abc' => [ 'yes' ]
+					'not-mapped' => [ 'dontsync' ]
+				],
+				[
+					'GroupMap' => [ 'abc' => [ 'has-abc' => [ 'yes' ] ] ],
+					'GroupAttributeDelimiter' => null
+				],
+				[ 'abc', 'sysop' ],
+				[ 'sysop' ]
 			]
 		];
 	}
