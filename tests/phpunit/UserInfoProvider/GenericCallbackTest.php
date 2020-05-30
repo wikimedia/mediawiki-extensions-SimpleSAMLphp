@@ -11,8 +11,10 @@ class GenericCallbackTest extends TestCase {
 	 * @covers MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\GenericCallback::__construct
 	 */
 	public function testConstructor() {
-		$provider = new GenericCallback( function () {
-  } );
+		$provider = new GenericCallback(
+			function () {
+			}
+		);
 
 		$this->assertInstanceOf(
 			'MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\GenericCallback',
