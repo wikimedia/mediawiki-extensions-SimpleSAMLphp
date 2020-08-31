@@ -194,7 +194,7 @@ class SimpleSAMLphp extends PluggableAuth {
 	/**
 	 * @SuppressWarnings(PHPMD.Superglobals)
 	 */
-	private static function getSAMLClient() {
+	protected static function getSAMLClient() {
 		// Make MW core `SpecialPageFatalTest` pass
 		if ( defined( 'MW_PHPUNIT_TEST' ) ) {
 			return new MediaWiki\Extension\SimpleSAMLphp\Tests\Dummy\SimpleSAML\Auth\Simple();
