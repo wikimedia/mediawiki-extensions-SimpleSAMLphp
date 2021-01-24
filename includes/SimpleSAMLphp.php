@@ -193,6 +193,7 @@ class SimpleSAMLphp extends PluggableAuth {
 
 	/**
 	 * @SuppressWarnings(PHPMD.Superglobals)
+	 * @return \SimpleSAML\Auth\Simple
 	 */
 	protected static function getSAMLClient() {
 		// Make MW core `SpecialPageFatalTest` pass
@@ -201,9 +202,9 @@ class SimpleSAMLphp extends PluggableAuth {
 		}
 		require_once rtrim( $GLOBALS['wgSimpleSAMLphp_InstallDir'], '/' )
 			. '/lib/_autoload.php';
-		$class = 'SimpleSAML_Auth_Simple';
-		if ( class_exists( 'SimpleSAML\Auth\Simple' ) ) {
-			$class = 'SimpleSAML\\Auth\\Simple';
+		$class = SimpleSAML_Auth_Simple::class;
+		if ( class_exists( \SimpleSAML\Auth\Simple::class ) ) {
+			$class = \SimpleSAML\Auth\Simple::class;
 		}
 		return new $class( $GLOBALS['wgSimpleSAMLphp_AuthSourceId'] );
 	}
