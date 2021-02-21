@@ -33,44 +33,44 @@
 	},
 	"config": {
 		"SimpleSAMLphp_UsernameAttribute": {
-			"value":  null
+			"value": null
 		},
 		"SimpleSAMLphp_RealNameAttribute": {
-			"value":  null
+			"value": null
 		},
 		"SimpleSAMLphp_EmailAttribute": {
-			"value":  null
+			"value": null
 		},
 		"SimpleSAMLphp_GroupMap": {
-			"value":  []
+			"value": []
 		},
 		"SimpleSAMLphp_GroupAttributeDelimiter": {
-			"value":  null,
+			"value": null,
 			"description": "If the SAML attribute for groups is not an array but a CSV string, this can be set to the appropriate delimiter (e.g. ',')"
 		},
 		"SimpleSAMLphp_SyncAllGroups_GroupAttributeName": {
-			"value":  "groups"
+			"value": "groups"
 		},
 		"SimpleSAMLphp_SyncAllGroups_LocallyManaged": {
-			"value":  [ "sysop" ]
+			"value": [ "sysop" ]
 		},
 		"SimpleSAMLphp_SyncAllGroups_GroupNameModificationCallback": {
-			"value":  null
+			"value": null
 		},
 		"SimpleSAMLphp_AttributeProcessorFactories": {
-			"value":  [
+			"value": [
 				"MediaWiki\\Extension\\SimpleSAMLphp\\AttributeProcessor\\MapGroups::factory"
 			]
 		},
 		"SimpleSAMLphp_MandatoryUserInfoProviderFactories": {
-			"value":  {
+			"value": {
 				"username": "MediaWiki\\Extension\\SimpleSAMLphp\\UserInfoProvider\\LowerCasedUsername::factory",
 				"realname": "MediaWiki\\Extension\\SimpleSAMLphp\\UserInfoProvider\\Realname::factory",
 				"email": "MediaWiki\\Extension\\SimpleSAMLphp\\UserInfoProvider\\Email::factory"
 			}
 		},
 		"PluggableAuth_Class": {
-			"value":  "SimpleSAMLphp"
+			"value": "SimpleSAMLphp"
 		}
 	},
 	"manifest_version": 2
