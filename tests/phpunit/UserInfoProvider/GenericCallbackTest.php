@@ -12,7 +12,7 @@ class GenericCallbackTest extends TestCase {
 	 */
 	public function testConstructor() {
 		$provider = new GenericCallback(
-			function () {
+			static function () {
 			}
 		);
 
@@ -26,7 +26,7 @@ class GenericCallbackTest extends TestCase {
 	 * @covers MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\GenericCallback::getValue
 	 */
 	public function testGetValue() {
-		$provider = new GenericCallback( function ( $attributes ) {
+		$provider = new GenericCallback( static function ( $attributes ) {
 			if ( !isset( $attributes['mail'] ) ) {
 				throw new Exception( 'missing email address' );
 			}

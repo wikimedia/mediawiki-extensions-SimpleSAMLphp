@@ -96,7 +96,7 @@ class SyncAllGroupsTest extends MediaWikiTestCase {
 					'SyncAllGroups_GroupAttributeName' => 'groups',
 					'SyncAllGroups_LocallyManaged' => [],
 					'GroupAttributeDelimiter' => ' | ',
-					'SyncAllGroups_GroupNameModificationCallback' => function ( $origGroupName ){
+					'SyncAllGroups_GroupNameModificationCallback' => static function ( $origGroupName ){
 						return preg_replace( '#^CN=(.*?),OU=.*$#', '$1', $origGroupName );
 					}
 				],
