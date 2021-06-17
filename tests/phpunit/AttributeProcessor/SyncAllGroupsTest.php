@@ -51,7 +51,7 @@ class SyncAllGroupsTest extends MediaWikiTestCase {
 
 		$processor = $factoryMethod( $user, $attributes, $config, $saml );
 		$processor->run();
-		$actualGroups = $user->getGroups();
+		$actualGroups = $this->getServiceContainer()->getUserGroupManager()->getUserGroups( $user );
 
 		$this->assertArrayEquals(
 			$expecedGroups,

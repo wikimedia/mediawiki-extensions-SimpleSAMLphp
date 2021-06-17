@@ -2,6 +2,8 @@
 
 namespace MediaWiki\Extension\SimpleSAMLphp\AttributeProcessor;
 
+use MediaWiki\MediaWikiServices;
+
 class MapGroups extends Base {
 
 	/**
@@ -26,7 +28,13 @@ class MapGroups extends Base {
 				if ( $groupAdded == true ) {
 					break;
 				} elseif ( !isset( $this->attributes[$attrName] ) ) {
-					$this->user->removeGroup( $group );
+					if ( method_exists( MediaWikiServices::class, 'getUserGroupManager' ) ) {
+						// MW 1.35+
+						MediaWikiServices::getInstance()->getUserGroupManager()
+							->removeUserFromGroup( $this->user, $group );
+					} else {
+						$this->user->removeGroup( $group );
+					}
 					continue;
 				}
 				$samlProvidedGroups = $this->attributes[$attrName];
@@ -35,13 +43,25 @@ class MapGroups extends Base {
 				}
 				foreach ( $needles as $needle ) {
 					if ( in_array( $needle, $samlProvidedGroups ) ) {
-						$this->user->addGroup( $group );
+						if ( method_exists( MediaWikiServices::class, 'getUserGroupManager' ) ) {
+							// MW 1.35+
+							MediaWikiServices::getInstance()->getUserGroupManager()
+								->addUserToGroup( $this->user, $group );
+						} else {
+							$this->user->addGroup( $group );
+						}
 						// This differs from the original implementation: Otherwise the _last_ group
 						// in the list would always determine whether a group should be added or not
 						$groupAdded = true;
 						break;
 					} else {
-						$this->user->removeGroup( $group );
+						if ( method_exists( MediaWikiServices::class, 'getUserGroupManager' ) ) {
+							// MW 1.35+
+							MediaWikiServices::getInstance()->getUserGroupManager()
+								->removeUserFromGroup( $this->user, $group );
+						} else {
+							$this->user->removeGroup( $group );
+						}
 					}
 				}
 			}

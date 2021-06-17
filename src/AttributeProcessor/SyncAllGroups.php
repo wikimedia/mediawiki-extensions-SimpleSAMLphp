@@ -2,6 +2,8 @@
 
 namespace MediaWiki\Extension\SimpleSAMLphp\AttributeProcessor;
 
+use MediaWiki\MediaWikiServices;
+
 class SyncAllGroups extends Base {
 
 	/**
@@ -26,13 +28,23 @@ class SyncAllGroups extends Base {
 
 		$locallyManagedGroups = array_map( 'trim', $locallyManagedGroups );
 
-		$currentGroups = $this->user->getGroups();
+		if ( method_exists( MediaWikiServices::class, 'getUserGroupManager' ) ) {
+			// MW 1.35+
+			$currentGroups = MediaWikiServices::getInstance()->getUserGroupManager()->getUserGroups( $this->user );
+		} else {
+			$currentGroups = $this->user->getGroups();
+		}
 		$groupsToAdd = array_diff( $samlGroups, $currentGroups );
 		foreach ( $groupsToAdd as $groupToAdd ) {
 			if ( in_array( $groupToAdd, $locallyManagedGroups ) ) {
 				continue;
 			}
-			$this->user->addGroup( $groupToAdd );
+			if ( method_exists( MediaWikiServices::class, 'getUserGroupManager' ) ) {
+				// MW 1.35+
+				MediaWikiServices::getInstance()->getUserGroupManager()->addUserToGroup( $this->user, $groupToAdd );
+			} else {
+				$this->user->addGroup( $groupToAdd );
+			}
 		}
 
 		$groupsToRemove = array_diff( $currentGroups, $samlGroups );
@@ -40,7 +52,13 @@ class SyncAllGroups extends Base {
 			if ( in_array( $groupToRemove, $locallyManagedGroups ) ) {
 				continue;
 			}
-			$this->user->removeGroup( $groupToRemove );
+			if ( method_exists( MediaWikiServices::class, 'getUserGroupManager' ) ) {
+				// MW 1.35+
+				MediaWikiServices::getInstance()->getUserGroupManager()
+					->removeUserFromGroup( $this->user, $groupToRemove );
+			} else {
+				$this->user->removeGroup( $groupToRemove );
+			}
 		}
 	}
 
