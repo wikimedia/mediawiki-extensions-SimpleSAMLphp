@@ -5,10 +5,10 @@ namespace MediaWiki\Extension\SimpleSAMLphp\Tests\AttributeProcessor;
 use HashConfig;
 use MediaWiki\Extension\SimpleSAMLphp\IAttributeProcessor;
 use MediaWiki\Extension\SimpleSAMLphp\Tests\Dummy\SimpleSAML\Auth\Simple;
-use MediaWikiTestCase;
+use MediaWikiIntegrationTestCase;
 use TestUserRegistry;
 
-class SyncAllGroupsTest extends MediaWikiTestCase {
+class SyncAllGroupsTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers MediaWiki\Extension\SimpleSAMLphp\AttributeProcessor\SyncAllGroups::factory
