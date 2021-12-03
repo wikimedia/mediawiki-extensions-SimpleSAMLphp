@@ -5,9 +5,9 @@ namespace MediaWiki\Extension\SimpleSAMLphp\Tests\UserInfoProvider;
 use Exception;
 use HashConfig;
 use MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\Username;
-use MediaWikiTestCase;
+use MediaWikiIntegrationTestCase;
 
-class UsernameTest extends MediaWikiTestCase {
+class UsernameTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @covers MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\Username::__construct
