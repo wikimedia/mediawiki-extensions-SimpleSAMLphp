@@ -3,8 +3,8 @@
 namespace MediaWiki\Extension\SimpleSAMLphp\Tests\AttributeProcessor;
 
 use HashConfig;
+use MediaWiki\Extension\SimpleSAMLphp\AttributeProcessor\SyncAllGroups;
 use MediaWiki\Extension\SimpleSAMLphp\IAttributeProcessor;
-use MediaWiki\Extension\SimpleSAMLphp\Tests\Dummy\SimpleSAML\Auth\Simple;
 use MediaWikiIntegrationTestCase;
 use TestUserRegistry;
 
@@ -17,12 +17,7 @@ class SyncAllGroupsTest extends MediaWikiIntegrationTestCase {
 		$factoryMethod =
 			'MediaWiki\\Extension\\SimpleSAMLphp\\AttributeProcessor\\SyncAllGroups::factory';
 
-		$user = $this->createMock( \User::class );
-		$attributes = [];
-		$config = new HashConfig( [] );
-		$saml = new Simple();
-
-		$processor = $factoryMethod( $user, $attributes, $config, $saml );
+		$processor = $factoryMethod();
 
 		$this->assertInstanceOf(
 			IAttributeProcessor::class,
@@ -41,17 +36,14 @@ class SyncAllGroupsTest extends MediaWikiIntegrationTestCase {
 	 * @covers MediaWiki\Extension\SimpleSAMLphp\AttributeProcessor\SyncAllGroups::run
 	 */
 	public function testRun( $attributes, $configArray, $initialGroups, $expecedGroups ) {
-		$factoryMethod =
-			'MediaWiki\\Extension\\SimpleSAMLphp\\AttributeProcessor\\SyncAllGroups::factory';
-
 		$testUser = TestUserRegistry::getMutableTestUser( 'MapGroupsTestUser', $initialGroups );
 		$user = $testUser->getUser();
 		$config = new HashConfig( $configArray );
-		$saml = new Simple();
+		$groupManager = $this->getServiceContainer()->getUserGroupManager();
 
-		$processor = $factoryMethod( $user, $attributes, $config, $saml );
-		$processor->run();
-		$actualGroups = $this->getServiceContainer()->getUserGroupManager()->getUserGroups( $user );
+		$processor = new SyncAllGroups( $groupManager );
+		$processor->run( $user, $attributes, $config );
+		$actualGroups = $groupManager->getUserGroups( $user );
 
 		$this->assertArrayEquals(
 			$expecedGroups,
@@ -69,10 +61,10 @@ class SyncAllGroupsTest extends MediaWikiIntegrationTestCase {
 			'default-example' => [
 				[ 'groups' => [ 'administrator', 'alsosync' ] ],
 				[
-					'SyncAllGroups_GroupAttributeName' => 'groups',
-					'SyncAllGroups_LocallyManaged' => [ 'abc' ],
-					'GroupAttributeDelimiter' => null,
-					'SyncAllGroups_GroupNameModificationCallback' => null
+					'syncAllGroups_GroupAttributeName' => 'groups',
+					'syncAllGroups_LocallyManaged' => [ 'abc' ],
+					'groupAttributeDelimiter' => null,
+					'syncAllGroups_GroupNameModificationCallback' => null
 				],
 				[ 'abc', 'def' ],
 				[ 'abc', 'administrator', 'alsosync' ]
@@ -80,10 +72,10 @@ class SyncAllGroupsTest extends MediaWikiIntegrationTestCase {
 			'delimiter-example' => [
 				[ 'groups' => [ 'administrator, alsosync' ] ],
 				[
-					'SyncAllGroups_GroupAttributeName' => 'groups',
-					'SyncAllGroups_LocallyManaged' => [ 'abc' ],
-					'GroupAttributeDelimiter' => ',',
-					'SyncAllGroups_GroupNameModificationCallback' => null
+					'syncAllGroups_GroupAttributeName' => 'groups',
+					'syncAllGroups_LocallyManaged' => [ 'abc' ],
+					'groupAttributeDelimiter' => ',',
+					'syncAllGroups_GroupNameModificationCallback' => null
 				],
 				[ 'abc', 'def' ],
 				[ 'abc', 'administrator', 'alsosync' ]
@@ -93,15 +85,23 @@ class SyncAllGroupsTest extends MediaWikiIntegrationTestCase {
 					. 'CN=Group_2,OU=ABC,DC=someDomainController | '
 					. 'CN=Group_3,OU=ABC,DC=someDomainController' ] ],
 				[
-					'SyncAllGroups_GroupAttributeName' => 'groups',
-					'SyncAllGroups_LocallyManaged' => [],
-					'GroupAttributeDelimiter' => ' | ',
-					'SyncAllGroups_GroupNameModificationCallback' => static function ( $origGroupName ){
+					'syncAllGroups_GroupAttributeName' => 'groups',
+					'syncAllGroups_LocallyManaged' => [],
+					'groupAttributeDelimiter' => ' | ',
+					'syncAllGroups_GroupNameModificationCallback' => static function ( $origGroupName ){
 						return preg_replace( '#^CN=(.*?),OU=.*$#', '$1', $origGroupName );
 					}
 				],
 				[ 'Group_1', 'Group_1000' ],
 				[ 'Group_1', 'Group_2', 'Group_3' ]
+			],
+			'T297493' => [
+				[ 'not_the_configured_attribute' ],
+				[
+					'syncAllGroups_GroupAttributeName' => 'groups'
+				],
+				[ 'Group_1', 'sysop' ],
+				[ 'sysop' ]
 			]
 		];
 	}

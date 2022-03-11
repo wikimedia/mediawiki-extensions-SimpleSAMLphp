@@ -21,11 +21,9 @@ class GenericCallback implements IUserInfoProvider {
 	}
 
 	/**
-	 *
-	 * @param string $samlattributes
-	 * @return string
+	 * @inheritDoc
 	 */
-	public function getValue( $samlattributes ) {
+	public function getValue( $samlattributes, $config ): string {
 		return call_user_func_array( $this->callback, [ $samlattributes ] );
 	}
 }

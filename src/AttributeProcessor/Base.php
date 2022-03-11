@@ -2,9 +2,15 @@
 
 namespace MediaWiki\Extension\SimpleSAMLphp\AttributeProcessor;
 
+use Config;
 use MediaWiki\Extension\SimpleSAMLphp\IAttributeProcessor;
+use MediaWiki\User\UserIdentity;
+use MultiConfig;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
-abstract class Base implements IAttributeProcessor {
+abstract class Base implements IAttributeProcessor, LoggerAwareInterface {
 
 	/**
 	 *
@@ -25,34 +31,45 @@ abstract class Base implements IAttributeProcessor {
 	protected $config = null;
 
 	/**
-	 *
-	 * @var SimpleSAML\Auth\Simple
+	 * @var LoggerInterface
 	 */
-	protected $saml = null;
+	protected $logger = null;
 
-	/**
-	 *
-	 * @param \User $user
-	 * @param array $attributes
-	 * @param \Config $config
-	 * @param SimpleSAML\Auth\Simple $saml The SAML authentication interface
-	 */
-	public function __construct( $user, $attributes, $config, $saml ) {
-		$this->user = $user;
-		$this->attributes = $attributes;
-		$this->config = $config;
-		$this->saml = $saml;
+	public function __construct() {
+		$this->logger = new NullLogger();
 	}
 
 	/**
-	 *
-	 * @param \User $user
-	 * @param array $attributes
-	 * @param \Config $config
-	 * @param SimpleSAML\Auth\Simple $saml The SAML authentication interface
+	 * @inheritDoc
+	 */
+	public function setLogger( LoggerInterface $logger ) {
+		$this->logger = $logger;
+	}
+
+	/**
 	 * @return IAttributeProcessor
 	 */
-	public static function factory( $user, $attributes, $config, $saml ) {
-		return new static( $user, $attributes, $config, $saml );
+	public static function factory() {
+		return new static();
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function run( UserIdentity $user, array $attributes, Config $config ): void {
+		$this->user = $user;
+		$this->attributes = $attributes;
+		$this->config = new MultiConfig( [
+			$config,
+			$this->getDefaultConfig()
+		] );
+		$this->doRun();
+	}
+
+	abstract protected function doRun(): void;
+
+	/**
+	 * @return Config
+	 */
+	abstract protected function getDefaultConfig(): Config;
 }

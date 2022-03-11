@@ -7,12 +7,10 @@ use Exception;
 class Realname extends Base {
 
 	/**
-	 *
-	 * @param array $samlattributes
-	 * @return string
+	 * @inheritDoc
 	 */
-	public function getValue( $samlattributes ) {
-		$realNameAttr = $this->config->get( 'RealNameAttribute' );
+	public function getValue( $samlattributes, $config ): string {
+		$realNameAttr = $config->get( 'realNameAttribute' );
 		$realname = '';
 
 		if ( $realNameAttr === null ) {

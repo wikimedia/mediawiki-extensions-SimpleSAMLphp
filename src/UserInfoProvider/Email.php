@@ -7,12 +7,10 @@ use Exception;
 class Email extends Base {
 
 	/**
-	 *
-	 * @param array $samlattributes
-	 * @return string
+	 * @inheritDoc
 	 */
-	public function getValue( $samlattributes ) {
-		$emailAttr = $this->config->get( 'EmailAttribute' );
+	public function getValue( $samlattributes, $config ): string {
+		$emailAttr = $config->get( 'emailAttribute' );
 		$email = '';
 
 		if ( $emailAttr === null ) {

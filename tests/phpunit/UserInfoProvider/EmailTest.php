@@ -13,7 +13,7 @@ class EmailTest extends TestCase {
 	 * @covers MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\Email::__construct
 	 */
 	public function testConstructor() {
-		$provider = new Email( new HashConfig( [] ) );
+		$provider = new Email();
 
 		$this->assertInstanceOf(
 			'MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\Email',
@@ -25,7 +25,7 @@ class EmailTest extends TestCase {
 	 * @covers MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\Email::factory
 	 */
 	public function testFactory() {
-		$provider = Email::factory( new HashConfig( [] ) );
+		$provider = Email::factory();
 
 		$this->assertInstanceOf(
 			'MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\Email',
@@ -43,32 +43,34 @@ class EmailTest extends TestCase {
 			'mail' => [
 				'someone@somewhere.com'
 			]
-		] );
+		],
+		new HashConfig( [] ) );
 	}
 
 	/**
 	 * @covers MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\Email::getValue
 	 */
 	public function testMissingAttributeException() {
-		$provider = Email::factory( new HashConfig( [
-			'EmailAttribute' => 'mail'
-		] ) );
+		$provider = Email::factory();
 		$this->expectException( Exception::class );
-		$provider->getValue( [] );
+		$provider->getValue( [], new HashConfig( [
+			'emailAttribute' => 'mail'
+		] ) );
 	}
 
 	/**
 	 * @covers MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\Email::getValue
 	 */
 	public function testGetValue() {
-		$provider = Email::factory( new HashConfig( [
-			'EmailAttribute' => 'mail'
-		] ) );
+		$provider = Email::factory();
 		$mail = $provider->getValue( [
 			'mail' => [
 				'someone@somewhere.com'
 			]
-		] );
+		],
+		new HashConfig( [
+			'emailAttribute' => 'mail'
+		] ) );
 
 		$this->assertEquals( 'someone@somewhere.com', $mail );
 	}

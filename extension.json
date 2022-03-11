@@ -1,17 +1,18 @@
 {
 	"name": "SimpleSAMLphp",
-	"version": "4.5.2",
+	"version": "5.0.0-beta",
 	"author": [
-		"[https://www.mediawiki.org/wiki/User:Cindy.cicalese Cindy Cicalese]"
+		"[https://www.mediawiki.org/wiki/User:Cindy.cicalese Cindy Cicalese]",
+		"[https://www.mediawiki.org/wiki/User:Osnard Robert Vogel]"
 	],
 	"url": "https://www.mediawiki.org/wiki/Extension:SimpleSAMLphp",
 	"descriptionmsg": "simplesamlphp-desc",
 	"license-name": "MIT",
 	"type": "other",
 	"requires": {
-		"MediaWiki": ">= 1.34.0",
+		"MediaWiki": ">= 1.35.0",
 		"extensions": {
-			"PluggableAuth": ">= 5.1"
+			"PluggableAuth": ">= 6.0"
 		}
 	},
 	"MessagesDirs": {
@@ -19,58 +20,72 @@
 			"i18n"
 		]
 	},
+	"ServiceWiringFiles": [
+		"includes/ServiceWiring.php"
+	],
 	"AutoloadNamespaces": {
 		"MediaWiki\\Extension\\SimpleSAMLphp\\": "src/"
 	},
 	"TestAutoloadNamespaces": {
 		"MediaWiki\\Extension\\SimpleSAMLphp\\Tests\\": "tests/phpunit/"
 	},
-	"AutoloadClasses": {
-		"SimpleSAMLphp": "includes/SimpleSAMLphp.php"
+	"HookHandlers": {
+		"pluggableauthpopulategroups": {
+			"class": "MediaWiki\\Extension\\SimpleSAMLphp\\HookHandler\\PluggableAuthPopulateGroups",
+			"services": [
+				"PluggableAuthFactory",
+				"SimpleSAMLphpAttributeProcessorFactory",
+				"SimpleSAMLphpSAMLClientFactory"
+			]
+		}
 	},
 	"Hooks": {
-		"PluggableAuthPopulateGroups": [ "SimpleSAMLphp::populateGroups" ]
+		"PluggableAuthPopulateGroups": "pluggableauthpopulategroups"
 	},
 	"config": {
-		"SimpleSAMLphp_UsernameAttribute": {
+		"SimpleSAMLphp_InstallDir": {
 			"value": null
 		},
-		"SimpleSAMLphp_RealNameAttribute": {
-			"value": null
-		},
-		"SimpleSAMLphp_EmailAttribute": {
-			"value": null
-		},
-		"SimpleSAMLphp_GroupMap": {
-			"value": []
-		},
-		"SimpleSAMLphp_GroupAttributeDelimiter": {
-			"value": null,
-			"description": "If the SAML attribute for groups is not an array but a CSV string, this can be set to the appropriate delimiter (e.g. ',')"
-		},
-		"SimpleSAMLphp_SyncAllGroups_GroupAttributeName": {
-			"value": "groups"
-		},
-		"SimpleSAMLphp_SyncAllGroups_LocallyManaged": {
-			"value": [ "sysop" ]
-		},
-		"SimpleSAMLphp_SyncAllGroups_GroupNameModificationCallback": {
-			"value": null
-		},
-		"SimpleSAMLphp_AttributeProcessorFactories": {
-			"value": [
-				"MediaWiki\\Extension\\SimpleSAMLphp\\AttributeProcessor\\MapGroups::factory"
-			]
-		},
-		"SimpleSAMLphp_MandatoryUserInfoProviderFactories": {
+		"SimpleSAMLphp_AttributeProcessors": {
 			"value": {
-				"username": "MediaWiki\\Extension\\SimpleSAMLphp\\UserInfoProvider\\LowerCasedUsername::factory",
-				"realname": "MediaWiki\\Extension\\SimpleSAMLphp\\UserInfoProvider\\Realname::factory",
-				"email": "MediaWiki\\Extension\\SimpleSAMLphp\\UserInfoProvider\\Email::factory"
+				"groupsync-mapped": {
+					"class": "MediaWiki\\Extension\\SimpleSAMLphp\\AttributeProcessor\\MapGroups",
+					"services": [ "ObjectFactory" ]
+				},
+				"groupsync-all": {
+					"class": "MediaWiki\\Extension\\SimpleSAMLphp\\AttributeProcessor\\SyncAllGroups",
+					"services": [ "ObjectFactory" ]
+				}
 			}
 		},
-		"PluggableAuth_Class": {
-			"value": "SimpleSAMLphp"
+		"SimpleSAMLphp_MandatoryUserInfoProviders": {
+			"value": {
+				"username": {
+					"class": "MediaWiki\\Extension\\SimpleSAMLphp\\UserInfoProvider\\LowerCasedUsername"
+				},
+				"rawusername": {
+					"class": "MediaWiki\\Extension\\SimpleSAMLphp\\UserInfoProvider\\Username"
+				},
+				"realname": {
+					"class": "MediaWiki\\Extension\\SimpleSAMLphp\\UserInfoProvider\\Realname"
+				},
+				"email": {
+					"class": "MediaWiki\\Extension\\SimpleSAMLphp\\UserInfoProvider\\Email"
+				}
+			}
+		}
+	},
+	"attributes": {
+		"PluggableAuth": {
+			"SimpleSAMLphp": {
+				"class": "MediaWiki\\Extension\\SimpleSAMLphp\\SimpleSAMLphp",
+				"services": [
+					"TitleFactory",
+					"UserFactory",
+					"SimpleSAMLphpSAMLClientFactory",
+					"SimpleSAMLphpMandatoryUserInfoProviderFactory"
+				]
+			}
 		}
 	},
 	"manifest_version": 2

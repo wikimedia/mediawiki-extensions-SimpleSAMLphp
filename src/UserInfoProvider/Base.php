@@ -3,29 +3,32 @@
 namespace MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider;
 
 use MediaWiki\Extension\SimpleSAMLphp\IUserInfoProvider;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
-abstract class Base implements IUserInfoProvider {
-
-	/**
-	 *
-	 * @var \Config
-	 */
-	protected $config = null;
+abstract class Base implements IUserInfoProvider, LoggerAwareInterface {
 
 	/**
-	 *
-	 * @param \Config $config
+	 * @var LoggerInterface
 	 */
-	public function __construct( $config ) {
-		$this->config = $config;
+	protected $logger = null;
+
+	public function __construct() {
+		$this->logger = new NullLogger();
 	}
 
 	/**
-	 *
-	 * @param \Config $config
 	 * @return IUserInfoProvider
 	 */
-	public static function factory( $config ) {
-		return new static( $config );
+	public static function factory() {
+		return new static();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function setLogger( LoggerInterface $logger ) {
+		$this->logger = $logger;
 	}
 }

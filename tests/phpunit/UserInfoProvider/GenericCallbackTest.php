@@ -2,6 +2,8 @@
 
 namespace MediaWiki\Extension\SimpleSAMLphp\Tests\UserInfoProvider;
 
+use Exception;
+use HashConfig;
 use MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider\GenericCallback;
 use PHPUnit\Framework\TestCase;
 
@@ -37,7 +39,8 @@ class GenericCallbackTest extends TestCase {
 			'mail' => [
 				'John.Doe@example.com'
 			]
-		] );
+		],
+		new HashConfig( [] ) );
 
 		$this->assertEquals( 'john.doe', $value );
 	}

@@ -2,24 +2,28 @@
 
 namespace MediaWiki\Extension\SimpleSAMLphp\Tests\Dummy\SimpleSAML\Auth;
 
-class Simple {
+use MediaWiki\Extension\SimpleSAMLphp\SAMLClient;
+
+class Simple implements SAMLClient {
 
 	/**
-	 *
+	 * @inheritDoc
 	 */
-	public function requireAuth() {
+	public function requireAuth(): void {
 		// Do nothing
 	}
 
 	/**
-	 *
-	 * @return array
+	 * @inheritDoc
 	 */
-	public function getAttributes() {
+	public function getAttributes(): array {
 		return [];
 	}
 
-	public function logout() {
+	/**
+	 * @inheritDoc
+	 */
+	public function logout( string $returnTo = '' ): void {
 		// Do nothing
 	}
 }

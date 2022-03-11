@@ -8,12 +8,10 @@ use Title;
 class Username extends Base {
 
 	/**
-	 *
-	 * @param array $samlattributes
-	 * @return string
+	 * @inheritDoc
 	 */
-	public function getValue( $samlattributes ) {
-		$usernameAttr = $this->config->get( 'UsernameAttribute' );
+	public function getValue( $samlattributes, $config ): string {
+		$usernameAttr = $config->get( 'usernameAttribute' );
 		$username = '';
 
 		if ( $usernameAttr === null ) {
