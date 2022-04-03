@@ -30,6 +30,7 @@ namespace MediaWiki\Extension\SimpleSAMLphp;
 use Exception;
 use HashConfig;
 use MediaWiki\Extension\PluggableAuth\PluggableAuth;
+use MediaWiki\Extension\SimpleSAMLphp\Factory\AttributeProcessorFactory;
 use MediaWiki\Extension\SimpleSAMLphp\Factory\MandatoryUserInfoProviderFactory;
 use MediaWiki\Extension\SimpleSAMLphp\Factory\SAMLClientFactory;
 use MediaWiki\User\UserFactory;
@@ -65,21 +66,34 @@ class SimpleSAMLphp extends PluggableAuth {
 	private $samlClient = null;
 
 	/**
+	 * @var MandatoryUserInfoProviderFactory
+	 */
+	private $userInfoProviderFactory;
+
+	/**
+	 * @var AttributeProcessorFactory
+	 */
+	private $attributeProcessorFactory = null;
+
+	/**
 	 * @param TitleFactory $titleFactory
 	 * @param UserFactory $userFactory
 	 * @param SAMLClientFactory $samlClientFactory
 	 * @param MandatoryUserInfoProviderFactory $userInfoProviderFactory
+	 * @param AttributeProcessorFactory $attributeProcessorFactory
 	 */
 	public function __construct(
 		TitleFactory $titleFactory,
 		UserFactory $userFactory,
 		SAMLClientFactory $samlClientFactory,
-		MandatoryUserInfoProviderFactory $userInfoProviderFactory
+		MandatoryUserInfoProviderFactory $userInfoProviderFactory,
+		AttributeProcessorFactory $attributeProcessorFactory
 	) {
 		$this->titleFactory = $titleFactory;
 		$this->userFactory = $userFactory;
 		$this->samlClientFactory = $samlClientFactory;
 		$this->userInfoProviderFactory = $userInfoProviderFactory;
+		$this->attributeProcessorFactory = $attributeProcessorFactory;
 	}
 
 	/**
