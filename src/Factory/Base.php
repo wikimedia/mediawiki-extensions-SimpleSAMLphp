@@ -7,7 +7,6 @@ use MWException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Wikimedia\ObjectFactory\ObjectFactory;
 
 abstract class Base implements LoggerAwareInterface {
 
@@ -17,7 +16,7 @@ abstract class Base implements LoggerAwareInterface {
 	protected $registry = [];
 
 	/**
-	 * @var ObjectFactory
+	 * @var Wikimedia\ObjectFactory\ObjectFactory|Wikimedia\ObjectFactory
 	 */
 	protected $objetFactory = null;
 
@@ -28,9 +27,9 @@ abstract class Base implements LoggerAwareInterface {
 
 	/**
 	 * @param array $registry
-	 * @param ObjectFactory $objectFactory
+	 * @param Wikimedia\ObjectFactory\ObjectFactory|Wikimedia\ObjectFactory $objectFactory
 	 */
-	public function __construct( array $registry, ObjectFactory $objectFactory ) {
+	public function __construct( array $registry, $objectFactory ) {
 		$this->registry = $registry;
 		$this->objetFactory = $objectFactory;
 		$this->logger = new NullLogger();
@@ -72,7 +71,7 @@ abstract class Base implements LoggerAwareInterface {
 
 	/**
 	 * @param string|callable|array $registryEntry
-	 * @return void
+	 * @return array
 	 */
 	protected function makeObjectFactorySpec( $registryEntry ) {
 		// b/c with the old config
