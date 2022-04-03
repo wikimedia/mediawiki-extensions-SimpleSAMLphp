@@ -128,7 +128,10 @@ class SimpleSAMLphp extends PluggableAuth {
 			$username = $this->makeValueFromAttributes( 'username' );
 			$realname = $this->makeValueFromAttributes( 'realname' );
 			$email = $this->makeValueFromAttributes( 'email' );
-			$userId = $this->userFactory->newFromName( $username )->getId();
+			$id = $this->userFactory->newFromName( $username )->getId();
+			if ( $id ) {
+				$userId = $id;
+			}
 		}
 		catch ( Exception $ex ) {
 			$errorMessage = $ex->getMessage();
