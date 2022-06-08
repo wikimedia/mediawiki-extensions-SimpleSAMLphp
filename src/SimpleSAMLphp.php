@@ -149,7 +149,16 @@ class SimpleSAMLphp extends PluggableAuth {
 	 * @throws Exception
 	 */
 	private function makeValueFromAttributes( $providerKey ) {
-		$provider = $this->userInfoProviderFactory->getInstance( $providerKey );
+		$factoryKey = $this->data['userinfoProviders'][$providerKey];
+		$provider = $this->userInfoProviderFactory->getInstance( $factoryKey );
+		$this->logger->debug(
+			"Using '{factoryKey}' (class '{clazz}') for '{providerKey}' UserInfoProvider",
+			[
+				'clazz' => get_class( $provider ),
+				'factoryKey' => $factoryKey,
+				'providerKey' => $providerKey
+			]
+		);
 		return $provider->getValue( $this->attributes, new HashConfig( $this->data ) );
 	}
 
