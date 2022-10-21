@@ -59,6 +59,7 @@ abstract class Base implements IAttributeProcessor, LoggerAwareInterface {
 	public function run( UserIdentity $user, array $attributes, Config $config ): void {
 		$this->user = $user;
 		$this->attributes = $attributes;
+		$this->logger->debug( 'Processing attributes: ' . json_encode( $this->attributes ) );
 		$this->config = new MultiConfig( [
 			$config,
 			$this->getDefaultConfig()
