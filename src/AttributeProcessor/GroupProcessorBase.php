@@ -21,7 +21,7 @@ abstract class GroupProcessorBase extends Base {
 		parent::__construct();
 		$this->userGroupManager = $userGroupManager;
 		if ( $userGroupManager === null ) {
-			MediaWikiServices::getInstance()->getUserGroupManager();
+			$this->userGroupManager = MediaWikiServices::getInstance()->getUserGroupManager();
 		}
 	}
 

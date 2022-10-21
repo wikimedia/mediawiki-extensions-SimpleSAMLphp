@@ -1,6 +1,6 @@
 {
 	"name": "SimpleSAMLphp",
-	"version": "5.0.0",
+	"version": "5.0.1",
 	"author": [
 		"[https://www.mediawiki.org/wiki/User:Cindy.cicalese Cindy Cicalese]",
 		"[https://www.mediawiki.org/wiki/User:Osnard Robert Vogel]"
@@ -50,11 +50,11 @@
 			"value": {
 				"groupsync-mapped": {
 					"class": "MediaWiki\\Extension\\SimpleSAMLphp\\AttributeProcessor\\MapGroups",
-					"services": [ "ObjectFactory" ]
+					"services": [ "UserGroupManager" ]
 				},
 				"groupsync-all": {
 					"class": "MediaWiki\\Extension\\SimpleSAMLphp\\AttributeProcessor\\SyncAllGroups",
-					"services": [ "ObjectFactory" ]
+					"services": [ "UserGroupManager" ]
 				}
 			}
 		},
