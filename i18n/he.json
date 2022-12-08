@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Amire80"
+		]
+	},
+	"simplesamlphp-desc": "אספקת אימות באמצעות SimpleSAMLphp בשילוב עם PluggableAuth"
+}
