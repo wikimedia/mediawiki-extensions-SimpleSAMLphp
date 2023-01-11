@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Eleassar"
+		]
+	},
+	"simplesamlphp-desc": "Zagotavlja avtentikacijo s SimpleSAMLphp v kombinaciji s PluggableAuth"
+}
