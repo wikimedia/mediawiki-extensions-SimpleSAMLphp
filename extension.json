@@ -38,12 +38,20 @@
 				"SimpleSAMLphpSAMLClientFactory"
 			]
 		},
+		"simplesamlphp-slo": {
+			"class": "MediaWiki\\Extension\\SimpleSAMLphp\\HookHandler\\SingleLogout",
+			"services": [
+				"PluggableAuthFactory",
+				"SimpleSAMLphpSAMLClientFactory"
+			]
+		},
 		"simplesamlphp-logout-link": {
 			"class": "MediaWiki\\Extension\\SimpleSAMLphp\\HookHandler\\LogoutLink"
 		}
 	},
 	"Hooks": {
 		"PluggableAuthPopulateGroups": "pluggableauthpopulategroups",
+		"UserLoadAfterLoadFromSession": "simplesamlphp-slo",
 		"SkinTemplateNavigation::Universal": "simplesamlphp-logout-link"
 	},
 	"config": {

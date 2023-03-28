@@ -20,4 +20,9 @@ interface SAMLClient {
 	 */
 	public function logout( string $returnTo = '' ): void;
 
+	/**
+	 * @return bool
+	 */
+	public function isAuthenticated();
+
 }
