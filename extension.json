@@ -37,10 +37,18 @@
 				"SimpleSAMLphpAttributeProcessorFactory",
 				"SimpleSAMLphpSAMLClientFactory"
 			]
+		},
+		"simplesamlphp-slo": {
+			"class": "MediaWiki\\Extension\\SimpleSAMLphp\\HookHandler\\SingleLogout",
+			"services": [
+				"PluggableAuthFactory",
+				"SimpleSAMLphpSAMLClientFactory"
+			]
 		}
 	},
 	"Hooks": {
-		"PluggableAuthPopulateGroups": "pluggableauthpopulategroups"
+		"PluggableAuthPopulateGroups": "pluggableauthpopulategroups",
+		"UserLoadAfterLoadFromSession": "simplesamlphp-slo"
 	},
 	"config": {
 		"SimpleSAMLphp_InstallDir": {
