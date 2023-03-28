@@ -44,11 +44,15 @@
 				"PluggableAuthFactory",
 				"SimpleSAMLphpSAMLClientFactory"
 			]
+		},
+		"simplesamlphp-logout-link": {
+			"class": "MediaWiki\\Extension\\SimpleSAMLphp\\HookHandler\\LogoutLink"
 		}
 	},
 	"Hooks": {
 		"PluggableAuthPopulateGroups": "pluggableauthpopulategroups",
-		"UserLoadAfterLoadFromSession": "simplesamlphp-slo"
+		"UserLoadAfterLoadFromSession": "simplesamlphp-slo",
+		"SkinTemplateNavigation::Universal": "simplesamlphp-logout-link"
 	},
 	"config": {
 		"SimpleSAMLphp_InstallDir": {
