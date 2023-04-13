@@ -41,18 +41,6 @@
 		"SimpleSAMLphp_InstallDir": {
 			"value": null
 		},
-		"SimpleSAMLphp_AttributeProcessors": {
-			"value": {
-				"groupsync-mapped": {
-					"class": "MediaWiki\\Extension\\SimpleSAMLphp\\AttributeProcessor\\MapGroups",
-					"services": [ "UserGroupManager" ]
-				},
-				"groupsync-all": {
-					"class": "MediaWiki\\Extension\\SimpleSAMLphp\\AttributeProcessor\\SyncAllGroups",
-					"services": [ "UserGroupManager" ]
-				}
-			}
-		},
 		"SimpleSAMLphp_MandatoryUserInfoProviders": {
 			"value": {
 				"username": {
@@ -78,8 +66,7 @@
 					"TitleFactory",
 					"UserFactory",
 					"SimpleSAMLphpSAMLClientFactory",
-					"SimpleSAMLphpMandatoryUserInfoProviderFactory",
-					"SimpleSAMLphpAttributeProcessorFactory"
+					"SimpleSAMLphpMandatoryUserInfoProviderFactory"
 				]
 			}
 		}

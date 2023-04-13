@@ -30,7 +30,6 @@ namespace MediaWiki\Extension\SimpleSAMLphp;
 use Exception;
 use HashConfig;
 use MediaWiki\Extension\PluggableAuth\PluggableAuth;
-use MediaWiki\Extension\SimpleSAMLphp\Factory\AttributeProcessorFactory;
 use MediaWiki\Extension\SimpleSAMLphp\Factory\MandatoryUserInfoProviderFactory;
 use MediaWiki\Extension\SimpleSAMLphp\Factory\SAMLClientFactory;
 use MediaWiki\User\UserFactory;
@@ -71,29 +70,21 @@ class SimpleSAMLphp extends PluggableAuth {
 	private $userInfoProviderFactory;
 
 	/**
-	 * @var AttributeProcessorFactory
-	 */
-	private $attributeProcessorFactory = null;
-
-	/**
 	 * @param TitleFactory $titleFactory
 	 * @param UserFactory $userFactory
 	 * @param SAMLClientFactory $samlClientFactory
 	 * @param MandatoryUserInfoProviderFactory $userInfoProviderFactory
-	 * @param AttributeProcessorFactory $attributeProcessorFactory
 	 */
 	public function __construct(
 		TitleFactory $titleFactory,
 		UserFactory $userFactory,
 		SAMLClientFactory $samlClientFactory,
-		MandatoryUserInfoProviderFactory $userInfoProviderFactory,
-		AttributeProcessorFactory $attributeProcessorFactory
+		MandatoryUserInfoProviderFactory $userInfoProviderFactory
 	) {
 		$this->titleFactory = $titleFactory;
 		$this->userFactory = $userFactory;
 		$this->samlClientFactory = $samlClientFactory;
 		$this->userInfoProviderFactory = $userInfoProviderFactory;
-		$this->attributeProcessorFactory = $attributeProcessorFactory;
 	}
 
 	/**
@@ -143,6 +134,7 @@ class SimpleSAMLphp extends PluggableAuth {
 			return false;
 		}
 		$this->attributes = $this->samlClient->getAttributes();
+		$this->logger->debug( 'Received attributes: ' . json_encode( $this->attributes, true ) );
 
 		try {
 			$username = $this->makeValueFromAttributes( 'username' );
@@ -215,4 +207,12 @@ class SimpleSAMLphp extends PluggableAuth {
 	public function saveExtraAttributes( $userId ): void {
 		// intentionally left blank
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getAttributes( $user ): array {
+		return $this->attributes;
+	}
+
 }
