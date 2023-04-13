@@ -2,7 +2,6 @@
 
 namespace MediaWiki\Extension\SimpleSAMLphp\Factory;
 
-use HashConfig;
 use MediaWiki\Extension\SimpleSAMLphp\SAMLClient;
 use MediaWiki\Extension\SimpleSAMLphp\SimpleSAMLphp;
 use MediaWiki\Extension\SimpleSAMLphp\SimpleSAMLphpSAMLClient;
@@ -20,7 +19,7 @@ class SAMLClientFactory {
 		if ( defined( 'MW_PHPUNIT_TEST' ) ) {
 			return new \MediaWiki\Extension\SimpleSAMLphp\Tests\Dummy\SimpleSAML\Auth\Simple();
 		}
-		$config = new HashConfig( $plugin->getConfig() );
+		$config = $plugin->getConfig();
 		$authSourceId = $config->get( 'authSourceId' );
 		return new SimpleSAMLphpSAMLClient( $authSourceId );
 	}

@@ -83,6 +83,11 @@ class SimpleSAMLphp extends PluggableAuth {
 	}
 
 	/**
+	 * @var array - has been removed from the base class, but is requried in this context
+	 */
+	private $data = [];
+
+	/**
 	 * @inheritDoc
 	 */
 	public function init( string $configId, ?array $data ): void {
@@ -97,9 +102,10 @@ class SimpleSAMLphp extends PluggableAuth {
 			'realname' => 'realname',
 			'email' => 'email'
 		];
+		$this->data = $data;
 		$this->data['userinfoProviders'] = array_merge(
 			$defaultUserinfoProviders,
-			$this->data['userinfoProviders'] ?? []
+			$data['userinfoProviders'] ?? []
 		);
 
 		$this->data['attributeProcessors'] =
@@ -195,14 +201,4 @@ class SimpleSAMLphp extends PluggableAuth {
 	public function saveExtraAttributes( $userId ): void {
 		// intentionally left blank
 	}
-
-	/**
-	 * Required for `PluggableAuthPopulateGroups` hookhandler
-	 * Maybe worth promoting into "Extension:PluggableAuth"
-	 * @return array
-	 */
-	public function getConfig(): array {
-		return $this->data;
-	}
-
 }
