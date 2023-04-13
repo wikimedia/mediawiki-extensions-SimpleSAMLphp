@@ -24,12 +24,6 @@ $wgPluggableAuth_Config['Log in using my SAML'] = [
 | `realNameAttribute`                           | (mandatory)   |
 | `emailAttribute`                              | (mandatory)   |
 | `userinfoProviders`                           | <code>[<br>&nbsp;&nbsp;'username' => 'username',<br>&nbsp;&nbsp;'realname' => 'realname',<br>&nbsp;&nbsp;'email' => 'email'<br>]</code> |
-| `attributeProcessors`                         | `[ 'groupsync-mapped' ]`
-| `mapGroups_Map`                               | `[]`          |
-| `syncAllGroups_GroupAttributeName`            | `groups`      |
-| `syncAllGroups_GroupNameModificationCallback` | `null`        |
-| `syncAllGroups_LocallyManaged`                | `[ 'sysop' ]` |
-| `groupAttributeDelimiter`                     | `null`
 
 ## User info providers
 
@@ -73,9 +67,3 @@ For simple usecases one can use `MediaWiki\Extension\SimpleSAMLphp\UserInfoProvi
         } );
     };
 ```
-
-## Attribute processors
-
-### Use case: "Group synchronization"
-
-### Define custom attribute processors

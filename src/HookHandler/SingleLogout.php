@@ -4,6 +4,7 @@ namespace MediaWiki\Extension\SimpleSAMLphp\HookHandler;
 
 use MediaWiki\Extension\PluggableAuth\PluggableAuthFactory;
 use MediaWiki\Extension\SimpleSAMLphp\Factory\SAMLClientFactory;
+use MediaWiki\Extension\SimpleSAMLphp\SimpleSAMLphp;
 use MediaWiki\User\Hook\UserLoadAfterLoadFromSessionHook;
 
 class SingleLogout implements UserLoadAfterLoadFromSessionHook {
@@ -31,7 +32,7 @@ class SingleLogout implements UserLoadAfterLoadFromSessionHook {
 	 */
 	public function onUserLoadAfterLoadFromSession( $user ) {
 		$currentPlugin = $this->pluggableAuthFactory->getInstance();
-		if ( $currentPlugin === false ) {
+		if ( $currentPlugin instanceof SimpleSAMLphp === false ) {
 			return;
 		}
 		$samlClient = $this->samlClientFactory->getInstance( $currentPlugin );
