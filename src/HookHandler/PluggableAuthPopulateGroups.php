@@ -2,7 +2,6 @@
 
 namespace MediaWiki\Extension\SimpleSAMLphp\HookHandler;
 
-use HashConfig;
 use MediaWiki\Extension\PluggableAuth\Hook\PluggableAuthPopulateGroups as HookPluggableAuthPopulateGroups;
 use MediaWiki\Extension\PluggableAuth\PluggableAuthFactory;
 use MediaWiki\Extension\SimpleSAMLphp\AttributeProcessorFactory;
@@ -61,7 +60,7 @@ class PluggableAuthPopulateGroups implements HookPluggableAuthPopulateGroups {
 			// not for arbitrary other plugins
 			return;
 		}
-		$config = new HashConfig( $currentPlugin->getConfig() );
+		$config = $currentPlugin->getConfig();
 		$processorKeys = $config->get( 'attributeProcessors' );
 		if ( empty( $processorKeys ) ) {
 			$this->logger->debug( "No 'attributeProcessors' set." );
