@@ -56,7 +56,7 @@ class SyncAllGroupsTest extends MediaWikiIntegrationTestCase {
 	 *
 	 * @return array
 	 */
-	public function provideRunData() {
+	public static function provideRunData() {
 		return [
 			'default-example' => [
 				[ 'groups' => [ 'administrator', 'alsosync' ] ],
