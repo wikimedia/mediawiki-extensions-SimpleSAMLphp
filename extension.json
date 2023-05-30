@@ -1,6 +1,6 @@
 {
 	"name": "SimpleSAMLphp",
-	"version": "5.0.1",
+	"version": "7.0-dev",
 	"author": [
 		"[https://www.mediawiki.org/wiki/User:Cindy.cicalese Cindy Cicalese]",
 		"[https://www.mediawiki.org/wiki/User:Osnard Robert Vogel]"
@@ -12,7 +12,7 @@
 	"requires": {
 		"MediaWiki": ">= 1.35.0",
 		"extensions": {
-			"PluggableAuth": ">= 6.0"
+			"PluggableAuth": ">= 7.0"
 		}
 	},
 	"MessagesDirs": {
