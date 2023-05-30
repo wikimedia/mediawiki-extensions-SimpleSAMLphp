@@ -30,14 +30,6 @@
 		"MediaWiki\\Extension\\SimpleSAMLphp\\Tests\\": "tests/phpunit/"
 	},
 	"HookHandlers": {
-		"pluggableauthpopulategroups": {
-			"class": "MediaWiki\\Extension\\SimpleSAMLphp\\HookHandler\\PluggableAuthPopulateGroups",
-			"services": [
-				"PluggableAuthFactory",
-				"SimpleSAMLphpAttributeProcessorFactory",
-				"SimpleSAMLphpSAMLClientFactory"
-			]
-		},
 		"simplesamlphp-slo": {
 			"class": "MediaWiki\\Extension\\SimpleSAMLphp\\HookHandler\\SingleLogout",
 			"services": [
@@ -50,7 +42,6 @@
 		}
 	},
 	"Hooks": {
-		"PluggableAuthPopulateGroups": "pluggableauthpopulategroups",
 		"UserLoadAfterLoadFromSession": "simplesamlphp-slo",
 		"SkinTemplateNavigation::Universal": "simplesamlphp-logout-link"
 	},
@@ -95,7 +86,8 @@
 					"TitleFactory",
 					"UserFactory",
 					"SimpleSAMLphpSAMLClientFactory",
-					"SimpleSAMLphpMandatoryUserInfoProviderFactory"
+					"SimpleSAMLphpMandatoryUserInfoProviderFactory",
+					"SimpleSAMLphpAttributeProcessorFactory"
 				]
 			}
 		}
