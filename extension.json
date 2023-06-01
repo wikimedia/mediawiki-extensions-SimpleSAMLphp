@@ -29,14 +29,6 @@
 	"TestAutoloadNamespaces": {
 		"MediaWiki\\Extension\\SimpleSAMLphp\\Tests\\": "tests/phpunit/"
 	},
-	"HookHandlers": {
-		"simplesamlphp-logout-link": {
-			"class": "MediaWiki\\Extension\\SimpleSAMLphp\\HookHandler\\LogoutLink"
-		}
-	},
-	"Hooks": {
-		"SkinTemplateNavigation::Universal": "simplesamlphp-logout-link"
-	},
 	"config": {
 		"SimpleSAMLphp_InstallDir": {
 			"value": null
