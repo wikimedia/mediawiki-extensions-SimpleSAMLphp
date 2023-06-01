@@ -214,4 +214,11 @@ class SimpleSAMLphp extends PluggableAuth {
 		return $this->attributes;
 	}
 
+	/**
+	 * @return bool
+	 * @since 7.0
+	 */
+	public function shouldOverrideDefaultLogout(): bool {
+		return true;
+	}
 }
