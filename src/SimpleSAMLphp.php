@@ -28,7 +28,6 @@
 namespace MediaWiki\Extension\SimpleSAMLphp;
 
 use Exception;
-use HashConfig;
 use MediaWiki\Extension\PluggableAuth\PluggableAuth;
 use MediaWiki\Extension\SimpleSAMLphp\Factory\MandatoryUserInfoProviderFactory;
 use MediaWiki\Extension\SimpleSAMLphp\Factory\SAMLClientFactory;
@@ -70,6 +69,11 @@ class SimpleSAMLphp extends PluggableAuth {
 	private $userInfoProviderFactory;
 
 	/**
+	 * @var array
+	 */
+	private $userInfoProviders;
+
+	/**
 	 * @param TitleFactory $titleFactory
 	 * @param UserFactory $userFactory
 	 * @param SAMLClientFactory $samlClientFactory
@@ -95,8 +99,8 @@ class SimpleSAMLphp extends PluggableAuth {
 	/**
 	 * @inheritDoc
 	 */
-	public function init( string $configId, ?array $data ): void {
-		parent::init( $configId, $data );
+	public function init( string $configId, array $config ): void {
+		parent::init( $configId, $config );
 
 		$this->samlClient = $this->samlClientFactory->getInstance( $this );
 
@@ -107,15 +111,10 @@ class SimpleSAMLphp extends PluggableAuth {
 			'realname' => 'realname',
 			'email' => 'email'
 		];
-		$this->data = $data;
-		$this->data['userinfoProviders'] = array_merge(
+		$this->userinfoProviders = array_merge(
 			$defaultUserinfoProviders,
-			$data['userinfoProviders'] ?? []
+			$config['data']['userinfoProviders'] ?? []
 		);
-
-		$this->data['attributeProcessors'] =
-			$this->data['attributeProcessors']
-			?? [ 'groupsync-mapped' ];
 	}
 
 	/**
@@ -130,11 +129,11 @@ class SimpleSAMLphp extends PluggableAuth {
 			$this->samlClient->requireAuth();
 		} catch ( Exception $e ) {
 			$errorMessage = $e->getMessage();
-			$this->logger->error( $errorMessage );
+			$this->getLogger()->error( $errorMessage );
 			return false;
 		}
 		$this->attributes = $this->samlClient->getAttributes();
-		$this->logger->debug( 'Received attributes: ' . json_encode( $this->attributes, true ) );
+		$this->getLogger()->debug( 'Received attributes: ' . json_encode( $this->attributes, true ) );
 
 		try {
 			$username = $this->makeValueFromAttributes( 'username' );
@@ -146,7 +145,7 @@ class SimpleSAMLphp extends PluggableAuth {
 			}
 		} catch ( Exception $ex ) {
 			$errorMessage = $ex->getMessage();
-			$this->logger->error( $errorMessage );
+			$this->getLogger()->error( $errorMessage );
 			return false;
 		}
 
@@ -160,9 +159,9 @@ class SimpleSAMLphp extends PluggableAuth {
 	 * @throws Exception
 	 */
 	private function makeValueFromAttributes( $providerKey ) {
-		$factoryKey = $this->data['userinfoProviders'][$providerKey];
+		$factoryKey = $this->userinfoProviders[$providerKey] ?? '';
 		$provider = $this->userInfoProviderFactory->getInstance( $factoryKey );
-		$this->logger->debug(
+		$this->getLogger()->debug(
 			"Using '{factoryKey}' (class '{clazz}') for '{providerKey}' UserInfoProvider",
 			[
 				'clazz' => get_class( $provider ),
@@ -170,7 +169,7 @@ class SimpleSAMLphp extends PluggableAuth {
 				'providerKey' => $providerKey
 			]
 		);
-		return $provider->getValue( $this->attributes, new HashConfig( $this->data ) );
+		return $provider->getValue( $this->attributes, $this->getData() );
 	}
 
 	/**
@@ -192,7 +191,7 @@ class SimpleSAMLphp extends PluggableAuth {
 		if ( $returnto === null ) {
 			$returnto = $this->titleFactory->newMainPage()->getFullURL();
 		}
-		$this->logger->debug( "Deauthenticate {$user->getName()} with returnTo '$returnto'" );
+		$this->getLogger()->debug( "Deauthenticate {$user->getName()} with returnTo '$returnto'" );
 		$this->samlClient->logout( $returnto );
 	}
 

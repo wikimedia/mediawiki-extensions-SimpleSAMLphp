@@ -19,7 +19,7 @@ class SAMLClientFactory {
 		if ( defined( 'MW_PHPUNIT_TEST' ) ) {
 			return new \MediaWiki\Extension\SimpleSAMLphp\Tests\Dummy\SimpleSAML\Auth\Simple();
 		}
-		$config = $plugin->getConfig();
+		$config = $plugin->getData();
 		$authSourceId = $config->get( 'authSourceId' );
 		return new SimpleSAMLphpSAMLClient( $authSourceId );
 	}
