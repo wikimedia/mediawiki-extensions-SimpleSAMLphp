@@ -30,19 +30,11 @@
 		"MediaWiki\\Extension\\SimpleSAMLphp\\Tests\\": "tests/phpunit/"
 	},
 	"HookHandlers": {
-		"simplesamlphp-slo": {
-			"class": "MediaWiki\\Extension\\SimpleSAMLphp\\HookHandler\\SingleLogout",
-			"services": [
-				"PluggableAuthFactory",
-				"SimpleSAMLphpSAMLClientFactory"
-			]
-		},
 		"simplesamlphp-logout-link": {
 			"class": "MediaWiki\\Extension\\SimpleSAMLphp\\HookHandler\\LogoutLink"
 		}
 	},
 	"Hooks": {
-		"UserLoadAfterLoadFromSession": "simplesamlphp-slo",
 		"SkinTemplateNavigation::Universal": "simplesamlphp-logout-link"
 	},
 	"config": {

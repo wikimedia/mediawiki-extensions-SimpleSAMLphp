@@ -40,11 +40,4 @@ class SimpleSAMLphpSAMLClient implements SAMLClient {
 	public function logout( string $returnTo = '' ): void {
 		$this->externalLibClient->logout( $returnTo );
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function isAuthenticated() {
-		return $this->externalLibClient->isAuthenticated();
-	}
 }
