@@ -143,8 +143,7 @@ class SimpleSAMLphp extends PluggableAuth {
 			if ( $id ) {
 				$userId = $id;
 			}
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			$errorMessage = $ex->getMessage();
 			$this->getLogger()->error( $errorMessage );
 			return false;
