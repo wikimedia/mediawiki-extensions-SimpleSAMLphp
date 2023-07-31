@@ -1,7 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
-			"Vlad5250"
+			"Winston Sung"
 		]
 	},
 	"simplesamlphp-desc": "Omogućuje potvdu identiteta s SimpleSAMLphp  koja radi zajedno s PluggableAuth"
