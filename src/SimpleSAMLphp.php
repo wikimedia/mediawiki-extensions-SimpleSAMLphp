@@ -71,7 +71,7 @@ class SimpleSAMLphp extends PluggableAuth {
 	/**
 	 * @var array
 	 */
-	private $userInfoProviders;
+	private $userinfoProviders;
 
 	/**
 	 * @param TitleFactory $titleFactory
@@ -161,15 +161,17 @@ class SimpleSAMLphp extends PluggableAuth {
 	private function makeValueFromAttributes( $providerKey ) {
 		$factoryKey = $this->userinfoProviders[$providerKey] ?? '';
 		$provider = $this->userInfoProviderFactory->getInstance( $factoryKey );
+		$providedValue = $provider->getValue( $this->attributes, $this->getData() );
 		$this->getLogger()->debug(
-			"Using '{factoryKey}' (class '{clazz}') for '{providerKey}' UserInfoProvider",
+			"UserInfoProvider '{factoryKey}' (class '{clazz}') for '{providerKey}' provided value '{providedValue}'",
 			[
 				'clazz' => get_class( $provider ),
 				'factoryKey' => $factoryKey,
-				'providerKey' => $providerKey
+				'providerKey' => $providerKey,
+				'providedValue' => $providedValue
 			]
 		);
-		return $provider->getValue( $this->attributes, $this->getData() );
+		return $providedValue;
 	}
 
 	/**
