@@ -15,7 +15,7 @@ class Username extends Base {
 		$username = '';
 
 		if ( $usernameAttr === null ) {
-			throw new Exception( '$wgSimpleSAMLphp_UsernameAttribute is not set' );
+			throw new Exception( 'SimpleSAMLphp data "usernameAttribute" key is not set' );
 		}
 
 		if ( !isset( $samlattributes[$usernameAttr] ) ) {
