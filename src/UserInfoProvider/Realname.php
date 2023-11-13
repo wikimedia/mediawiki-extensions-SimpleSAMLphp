@@ -14,7 +14,7 @@ class Realname extends Base {
 		$realname = '';
 
 		if ( $realNameAttr === null ) {
-			throw new Exception( '$wgSimpleSAMLphp_RealNameAttribute is not set' );
+			throw new Exception( 'SimpleSAMLphp data "realNameAttribute" key is not set' );
 		}
 
 		if ( is_array( $realNameAttr ) ) {

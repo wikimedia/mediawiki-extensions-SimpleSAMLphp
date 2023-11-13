@@ -14,7 +14,7 @@ class Email extends Base {
 		$email = '';
 
 		if ( $emailAttr === null ) {
-			throw new Exception( '$wgSimpleSAMLphp_EmailAttribute is not set' );
+			throw new Exception( 'SimpleSAMLphp data "emailAtribute" key is not set' );
 		}
 		if ( !isset( $samlattributes[$emailAttr] ) ) {
 			throw new Exception( 'Could not find email attribute: ' . $emailAttr );
