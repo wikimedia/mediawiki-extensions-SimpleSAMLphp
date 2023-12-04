@@ -1,7 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Rangekill"
+			"Rangekill",
+			"McDutchie"
 		]
-	}
+	},
+	"simplesamlphp-desc": "Biedt authenticatie met behulp van SimpleSAMLphp in combinatie met PluggableAuth"
 }
