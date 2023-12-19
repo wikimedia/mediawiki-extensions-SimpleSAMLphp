@@ -28,7 +28,7 @@ abstract class Base implements IUserInfoProvider, LoggerAwareInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function setLogger( LoggerInterface $logger ) {
+	public function setLogger( LoggerInterface $logger ): void {
 		$this->logger = $logger;
 	}
 }
