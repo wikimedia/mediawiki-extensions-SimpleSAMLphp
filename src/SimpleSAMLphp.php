@@ -28,6 +28,7 @@
 namespace MediaWiki\Extension\SimpleSAMLphp;
 
 use Exception;
+use MediaWiki\Auth\AuthManager;
 use MediaWiki\Extension\PluggableAuth\PluggableAuth;
 use MediaWiki\Extension\SimpleSAMLphp\Factory\MandatoryUserInfoProviderFactory;
 use MediaWiki\Extension\SimpleSAMLphp\Factory\SAMLClientFactory;
@@ -53,9 +54,14 @@ class SimpleSAMLphp extends PluggableAuth {
 	 */
 	private $userFactory = null;
 
-		/**
-		 * @var SAMLClientFactory
-		 */
+	/**
+	 * @var AuthManager
+	 */
+	private $authManager = null;
+
+	/**
+	 * @var SAMLClientFactory
+	 */
 	private $samlClientFactory = null;
 
 	/**
@@ -76,17 +82,20 @@ class SimpleSAMLphp extends PluggableAuth {
 	/**
 	 * @param TitleFactory $titleFactory
 	 * @param UserFactory $userFactory
+	 * @param AuthManager $authManager
 	 * @param SAMLClientFactory $samlClientFactory
 	 * @param MandatoryUserInfoProviderFactory $userInfoProviderFactory
 	 */
 	public function __construct(
 		TitleFactory $titleFactory,
 		UserFactory $userFactory,
+		AuthManager $authManager,
 		SAMLClientFactory $samlClientFactory,
 		MandatoryUserInfoProviderFactory $userInfoProviderFactory
 	) {
 		$this->titleFactory = $titleFactory;
 		$this->userFactory = $userFactory;
+		$this->authManager = $authManager;
 		$this->samlClientFactory = $samlClientFactory;
 		$this->userInfoProviderFactory = $userInfoProviderFactory;
 	}
@@ -133,6 +142,7 @@ class SimpleSAMLphp extends PluggableAuth {
 			return false;
 		}
 		$this->attributes = $this->samlClient->getAttributes();
+		$this->authManager->getRequest()->getSession()->setSecret( 'samlAttributes', $this->attributes );
 		$this->getLogger()->debug( 'Received attributes: ' . json_encode( $this->attributes, true ) );
 
 		try {
@@ -212,6 +222,11 @@ class SimpleSAMLphp extends PluggableAuth {
 	 * @inheritDoc
 	 */
 	public function getAttributes( $user ): array {
+		$sessionAttributes = $this->authManager->getRequest()->getSession()->getSecret( 'samlAttributes' );
+		if ( empty( $this->attributes ) && $sessionAttributes !== null ) {
+			$this->getLogger()->debug( 'Attributes from session: ' . json_encode( $sessionAttributes, true ) );
+			$this->attributes = $sessionAttributes;
+		}
 		return $this->attributes;
 	}
 
