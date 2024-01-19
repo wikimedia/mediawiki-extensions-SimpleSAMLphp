@@ -57,6 +57,7 @@
 				"services": [
 					"TitleFactory",
 					"UserFactory",
+					"AuthManager",
 					"SimpleSAMLphpSAMLClientFactory",
 					"SimpleSAMLphpMandatoryUserInfoProviderFactory"
 				]
