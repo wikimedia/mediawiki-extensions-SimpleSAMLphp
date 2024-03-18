@@ -11,13 +11,13 @@ return [
 	},
 	'SimpleSAMLphpMandatoryUserInfoProviderFactory' =>
 		static function ( MediaWikiServices $services ): MandatoryUserInfoProviderFactory {
-		$config = $services->getMainConfig();
-		$objectFactory = $services->getObjectFactory();
-		$factory = new MandatoryUserInfoProviderFactory(
-			$config->get( 'SimpleSAMLphp_MandatoryUserInfoProviders' ),
-			$objectFactory
-		);
-		$factory->setLogger( LoggerFactory::getInstance( 'SimpleSAMLphp' ) );
+			$config = $services->getMainConfig();
+			$objectFactory = $services->getObjectFactory();
+			$factory = new MandatoryUserInfoProviderFactory(
+				$config->get( 'SimpleSAMLphp_MandatoryUserInfoProviders' ),
+				$objectFactory
+			);
+			$factory->setLogger( LoggerFactory::getInstance( 'SimpleSAMLphp' ) );
 			return $factory;
 		}
 ];
