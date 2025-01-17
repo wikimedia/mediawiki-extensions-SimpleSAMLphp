@@ -3,7 +3,7 @@
 namespace MediaWiki\Extension\SimpleSAMLphp\UserInfoProvider;
 
 use Exception;
-use Title;
+use MediaWiki\Title\Title;
 
 class Username extends Base {
 
