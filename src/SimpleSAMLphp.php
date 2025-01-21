@@ -32,9 +32,9 @@ use MediaWiki\Auth\AuthManager;
 use MediaWiki\Extension\PluggableAuth\PluggableAuth;
 use MediaWiki\Extension\SimpleSAMLphp\Factory\MandatoryUserInfoProviderFactory;
 use MediaWiki\Extension\SimpleSAMLphp\Factory\SAMLClientFactory;
+use MediaWiki\Title\TitleFactory;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserIdentity;
-use TitleFactory;
 
 class SimpleSAMLphp extends PluggableAuth {
 
