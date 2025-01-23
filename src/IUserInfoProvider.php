@@ -2,7 +2,7 @@
 
 namespace MediaWiki\Extension\SimpleSAMLphp;
 
-use Config;
+use MediaWiki\Config\Config;
 
 interface IUserInfoProvider {
 
