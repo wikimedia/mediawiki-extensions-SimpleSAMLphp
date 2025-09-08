@@ -34,7 +34,6 @@ class Username extends Base {
 	}
 
 	/**
-	 *
 	 * @param string $samlProvidedUsername
 	 * @return string
 	 */

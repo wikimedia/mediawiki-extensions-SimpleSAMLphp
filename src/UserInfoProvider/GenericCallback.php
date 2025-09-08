@@ -7,13 +7,11 @@ use MediaWiki\Extension\SimpleSAMLphp\IUserInfoProvider;
 class GenericCallback implements IUserInfoProvider {
 
 	/**
-	 *
 	 * @var \Callable
 	 */
 	private $callback = null;
 
 	/**
-	 *
 	 * @param \Callable $callback
 	 */
 	public function __construct( $callback ) {

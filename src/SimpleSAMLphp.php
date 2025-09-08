@@ -39,7 +39,6 @@ use MediaWiki\User\UserIdentity;
 class SimpleSAMLphp extends PluggableAuth {
 
 	/**
-	 *
 	 * @var array
 	 */
 	private $attributes = [];
