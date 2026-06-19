@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Wizzard"
+		]
+	},
+	"simplesamlphp-desc": "Poskytuje overovanie pomocou SimpleSAMLphp v spojení s PluggableAuth"
+}
