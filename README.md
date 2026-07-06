@@ -19,7 +19,7 @@ $wgPluggableAuth_Config['Log in using my SAML'] = [
 ### Fields for `data`
 | Field name                                    | Default       | Description                      |
 | --------------------------------------------- | ------------- | ---------------------------------|
-| `authSourceId`                                | (mandatory)   | 
+| `authSourceId`                                | (mandatory)   |
 | `usernameAttribute`                           | (mandatory)   |
 | `realNameAttribute`                           | (mandatory)   |
 | `emailAttribute`                              | (mandatory)   |

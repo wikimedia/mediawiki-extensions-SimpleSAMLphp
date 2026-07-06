@@ -7,7 +7,16 @@ use MediaWiki\MediaWikiServices;
 
 return [
 	'SimpleSAMLphpSAMLClientFactory' => static function ( MediaWikiServices $services ): SAMLClientFactory {
-		return new SAMLClientFactory();
+		$config = $services->getMainConfig();
+		$objectFactory = $services->getObjectFactory();
+		$factory = new SAMLClientFactory(
+			$config,
+			$config->get( 'SimpleSAMLphp_SAMLClientSpecs' ),
+			$objectFactory
+		);
+
+		$factory->setLogger( LoggerFactory::getInstance( 'SimpleSAMLphp' ) );
+		return $factory;
 	},
 	'SimpleSAMLphpMandatoryUserInfoProviderFactory' =>
 		static function ( MediaWikiServices $services ): MandatoryUserInfoProviderFactory {
