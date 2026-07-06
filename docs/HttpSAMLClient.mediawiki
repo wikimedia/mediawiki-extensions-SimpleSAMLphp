@@ -1,0 +1,133 @@
+== HttpSAMLClient ==
+
+The <code>HttpSAMLClient</code> is an alternative SAML client implementation for the '''SimpleSAMLphp''' MediaWiki extension. Instead of loading SimpleSAMLphp directly into the MediaWiki PHP process (shared autoloader), it communicates with a standalone SimpleSAMLphp installation over HTTP.
+
+This avoids class autoloader and dependency collisions described in:
+* [https://phabricator.wikimedia.org/T394009 T394009]
+* [https://phabricator.wikimedia.org/T383351 T383351]
+
+=== Architecture overview ===
+
+<pre>
+┌────────────────────┐         HTTP (internal)        ┌─────────────────────────┐
+│   MediaWiki        │  ─────────────────────────────▶│  SimpleSAMLphp          │
+│   (HttpSAMLClient) │                                │  public/api/session.php │
+└────────────────────┘                                └─────────────────────────┘
+</pre>
+
+The <code>HttpSAMLClient</code> forwards the user's SimpleSAMLphp session cookies and an API token to a dedicated endpoint (<code>session.php</code>) on the SimpleSAMLphp installation. This endpoint returns session status, login URLs, and logout URLs as JSON.
+
+=== Configuration ===
+
+==== LocalSettings.php ====
+
+
+Add the following configuration to your <code>LocalSettings.php</code> file:
+
+<syntaxhighlight lang="php">
+$GLOBALS['wgPluggableAuth_Config']['Log in with SAML'] = [
+    'plugin' => 'SimpleSAMLphp',
+    'data' => [
+        'authSourceId' => 'default-sp',
+        'usernameAttribute' => 'username',
+        'realNameAttribute' => 'name',
+        'emailAttribute' => 'email'
+    ],
+];
+
+// Switch to the HTTP-based SAML client
+$GLOBALS['SimpleSAMLphp_SAMLClient'] = 'http-client';
+
+// Configure the HTTP client connection
+$GLOBALS['SimpleSAMLphp_HTTPClientConfig'] = [
+    'baseUrl' => 'http://localhost/saml/',
+    'sessionIdCookieName' => 'SimpleSAMLSessionID',
+    'authTokenCookieName' => 'SimpleSAMLAuthToken',
+    'sessionAPItoken' => 'your-shared-secret-token'
+];
+</syntaxhighlight>
+
+{| class="wikitable"
+|-
+! Parameter !! Description
+|-
+| <code>SimpleSAMLphp_SAMLClient</code> || Set to <code>'http-client'</code> to use the HTTP-based client instead of the default shared-autoloader client.
+|-
+| <code>baseUrl</code> || Base URL of the SimpleSAMLphp <code>public/</code> directory as accessible from MediaWiki (server-to-server).
+|-
+| <code>sessionIdCookieName</code> || Name of the SimpleSAMLphp session ID cookie (must match <code>session.cookie.name</code> in SimpleSAMLphp's <code>config.php</code>).
+|-
+| <code>authTokenCookieName</code> || Name of the SimpleSAMLphp auth token cookie (must match <code>session.authtoken.cookiename</code> in SimpleSAMLphp's <code>config.php</code>).
+|-
+| <code>sessionAPItoken</code> || A shared secret used to authenticate API calls from MediaWiki to the session endpoint (must match <code>mediawiki.sessionapi.token</code> in SimpleSAMLphp's <code>config.php</code>).
+|}
+
+==== SimpleSAMLphp config.php ====
+
+In your SimpleSAMLphp <code>config/config.php</code>, add the following settings to protect the session API endpoint:
+
+<syntaxhighlight lang="php">
+'mediawiki.sessionapi.token' => 'your-shared-secret-token',
+'mediawiki.sessionapi.allowedcallers' => '127.16.0.12/16',
+</syntaxhighlight>
+
+{| class="wikitable"
+|-
+! Parameter !! Description
+|-
+| <code>mediawiki.sessionapi.token</code> || Must match the <code>sessionAPItoken</code> value configured in MediaWiki. Must not be empty.
+|-
+| <code>mediawiki.sessionapi.allowedcallers</code> || Comma-separated list of CIDR ranges allowed to call the API (e.g. <code>172.16.0.0/12, 127.0.0.1/32</code>). HINT: Calls from <code>localhost</code> are always allowed.
+|}
+
+=== Installing the session.php endpoint ===
+
+The file <code>_simplesamlphp/public/api/session.php</code> (shipped with this extension) must be placed into the SimpleSAMLphp installation at:
+
+<pre>
+<simplesamlphp-root>/public/api/session.php
+</pre>
+
+==== Manual installation ====
+
+Copy the file from the extension source:
+
+<syntaxhighlight lang="bash">
+cp extensions/SimpleSAMLphp/_simplesamlphp/public/api/session.php \
+   /path/to/simplesamlphp/public/api/session.php
+</syntaxhighlight>
+
+=== Security ===
+
+The <code>session.php</code> endpoint is protected by two mechanisms:
+
+# '''Shared token''' — A secret token sent via the <code>X-SIMPLESAMLPHP-SESSION-API-TOKEN</code> HTTP header.
+# '''IP allowlisting''' — Only requests from configured CIDR ranges (via <code>mediawiki.sessionapi.allowedcallers</code>) are accepted.
+
+Both checks must pass for a request to be processed. Ensure:
+* The token is kept secret and not committed to version control. Use environment variables / secrets.
+* The allowed CIDR range is as restrictive as possible (ideally only the MediaWiki container/server IP).
+
+=== How it works ===
+
+# User visits MediaWiki and triggers SAML authentication.
+# <code>HttpSAMLClient</code> calls SimpleSAMLphp's <code>session.php?action=status</code>, forwarding the user's SSP session cookies.
+# If not authenticated, it calls <code>session.php?action=login-url&returnTo=...</code> and redirects the user to the IdP login.
+# After IdP authentication, the user returns to MediaWiki with valid SSP session cookies.
+# <code>HttpSAMLClient</code> retrieves user attributes via <code>session.php?action=status</code>.
+# For logout, it calls <code>session.php?action=logout-url&returnTo=...</code> and redirects the user.
+
+=== Available API actions ===
+
+{| class="wikitable"
+|-
+! Action !! Description !! Response fields
+|-
+| <code>status</code> || Check authentication state and retrieve attributes || <code>authenticated</code> (bool), <code>attributes</code> (object)
+|-
+| <code>login-url</code> || Get the IdP login URL || <code>loginUrl</code> (string)
+|-
+| <code>logout-url</code> || Get the logout URL || <code>logoutUrl</code> (string)
+|}
+
+All requests accept the query parameters <code>authSourceId</code> (default: <code>default-sp</code>) and <code>returnTo</code> (for login/logout URL generation).

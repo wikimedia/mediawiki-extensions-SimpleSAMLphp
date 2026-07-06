@@ -1,6 +1,6 @@
 {
 	"name": "SimpleSAMLphp",
-	"version": "7.0.1",
+	"version": "7.1.0",
 	"author": [
 		"[https://www.mediawiki.org/wiki/User:Cindy.cicalese Cindy Cicalese]",
 		"[https://www.mediawiki.org/wiki/User:Osnard Robert Vogel]"
@@ -33,6 +33,14 @@
 		"SimpleSAMLphp_InstallDir": {
 			"value": null
 		},
+		"SimpleSAMLphp_HTTPClientConfig": {
+			"value": {
+				"baseUrl": "http://localhost/_sp/",
+				"sessionIdCookieName": "SimpleSAMLSessionID",
+				"authTokenCookieName": "SimpleSAMLAuthToken",
+				"sessionAPItoken": ""
+			}
+		},
 		"SimpleSAMLphp_MandatoryUserInfoProviders": {
 			"value": {
 				"username": {
@@ -48,6 +56,21 @@
 					"class": "MediaWiki\\Extension\\SimpleSAMLphp\\UserInfoProvider\\Email"
 				}
 			}
+		},
+		"SimpleSAMLphp_SAMLClientSpecs": {
+			"value": {
+				"shared-autoloader-client": {
+					"factory": "MediaWiki\\Extension\\SimpleSAMLphp\\SimpleSAMLphpSAMLClient::factory",
+					"services": [ "PluggableAuthFactory" ]
+				},
+				"http-client": {
+					"factory": "MediaWiki\\Extension\\SimpleSAMLphp\\HttpSAMLClient::factory",
+					"services": [ "PluggableAuthFactory", "MainConfig", "HttpRequestFactory" ]
+				}
+			}
+		},
+		"SimpleSAMLphp_SAMLClient": {
+			"value": "shared-autoloader-client"
 		}
 	},
 	"attributes": {

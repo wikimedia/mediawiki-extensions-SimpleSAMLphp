@@ -4,9 +4,20 @@ namespace MediaWiki\Extension\SimpleSAMLphp;
 
 require_once rtrim( $GLOBALS['wgSimpleSAMLphp_InstallDir'], '/' ) . '/lib/_autoload.php';
 
+use MediaWiki\Extension\PluggableAuth\PluggableAuthFactory;
 use SimpleSAML\Auth\Simple;
 
 class SimpleSAMLphpSAMLClient implements SAMLClient {
+
+	/**
+	 * @param PluggableAuthFactory $pluggableAuthFactory
+	 * @return SimpleSAMLphpSAMLClient
+	 */
+	public static function factory( PluggableAuthFactory $pluggableAuthFactory ) {
+		$currentConfig = $pluggableAuthFactory->getCurrentConfig();
+		$authSourceId = $currentConfig['data']['authSourceId'];
+		return new self( $authSourceId );
+	}
 
 	/**
 	 * @var SimpleSAML\Auth\Simple
