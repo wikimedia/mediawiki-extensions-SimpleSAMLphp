@@ -7,7 +7,6 @@ use MediaWiki\Config\Config;
 interface IUserInfoProvider {
 
 	/**
-	 *
 	 * @param array $samlattributes
 	 * @param Config $config
 	 * @return string

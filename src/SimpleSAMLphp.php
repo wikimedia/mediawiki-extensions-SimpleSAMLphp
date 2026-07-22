@@ -39,7 +39,6 @@ use MediaWiki\User\UserIdentity;
 class SimpleSAMLphp extends PluggableAuth {
 
 	/**
-	 *
 	 * @var array
 	 */
 	private $attributes = [];
@@ -188,9 +187,6 @@ class SimpleSAMLphp extends PluggableAuth {
 	 * @since 1.0
 	 *
 	 * @inheritDoc
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-	 * @SuppressWarnings(PHPMD.Superglobals)
 	 */
 	public function deauthenticate( UserIdentity &$user ): void {
 		$returnto = null;
@@ -211,8 +207,6 @@ class SimpleSAMLphp extends PluggableAuth {
 	 * @since 1.0
 	 *
 	 * @inheritDoc
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	public function saveExtraAttributes( $userId ): void {
 		// intentionally left blank
