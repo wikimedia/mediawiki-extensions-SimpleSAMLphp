@@ -5,12 +5,12 @@ namespace MediaWiki\Extension\SimpleSAMLphp;
 use Exception;
 use MediaWiki\Config\Config;
 use MediaWiki\Config\HashConfig;
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\PluggableAuth\PluggableAuthFactory;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Request\WebRequest;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use RequestContext;
 
 /**
  * SAMLClient implementation that communicates with a standalone SimpleSAMLphp
